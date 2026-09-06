@@ -15,7 +15,7 @@ Este repositorio contiene la implementación y documentación del **Primer Proye
 
 | Nombre | Carné |
 | :--- | :--- |
-| **Pablo Elizondo Espinoza** |  |
+| **Pablo Elizondo Espinoza** | 2023396053 |
 | **José Eduardo Tencio Solano** | 2021079387 |
 
 
