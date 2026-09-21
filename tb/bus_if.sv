@@ -2,6 +2,9 @@
 // Interfaz de comunicacion con el DUT
 //=====================================
 
+`ifndef BUS_IF_SV
+`define BUS_IF_SV
+
 interface bus_if #(parameter pckg_sz = 16)(
     input logic clk,
     input logic reset
@@ -26,4 +29,6 @@ interface bus_if #(parameter pckg_sz = 16)(
         input  clk, reset, pop, push, D_push, D_pop, pndng
     );
 
-endinterface
+endinterface : bus_if
+
+`endif // BUS_IF_SV

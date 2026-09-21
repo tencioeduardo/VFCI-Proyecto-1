@@ -4,12 +4,15 @@
 // Conexion al Driver_padre por medio de: drvr_son_mbx
 // Tipo de paquetes en el mailbox: trans_bus
 
+`ifndef DRIVER_SON_SV
+`define DRIVER_SON_SV
+
 class Driver_son #(parameter pckg_sz = 16);
 
     int driver_id;
 
     virtual bus_if #(.pckg_sz(pckg_sz)) v_bif;
-    mailbox #(trans_bus) drvr_son_mbx;
+    trans_bus_mbx drvr_son_mbx;
     trans_bus cola_tx[$];
 
     function new(
@@ -73,4 +76,15 @@ class Driver_son #(parameter pckg_sz = 16);
         empaquetar_datos = {t.id_destino, t.payload};
     endfunction
 
-endclass
+    // ── Funcion 2: Manejar los resets
+    function reset();
+        v_bif.pndng <= 1'b0;
+        v_bif.D_pop <= '0;
+
+        cola_tx.delete();
+        @(posedge v_bif.clk);
+    endfunction
+
+endclass : Driver_son
+
+`endif // DRIVER_SON_SV
