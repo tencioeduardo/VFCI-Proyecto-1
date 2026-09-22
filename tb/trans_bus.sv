@@ -12,6 +12,7 @@ class trans_bus #(parameter pckg_sz = 16);
     // ----------------------------------------------------------
     // ── Campos aleatorizables
     // ----------------------------------------------------------
+    rand bit [7 : 0]         id_origen;
     rand bit [7 : 0]         id_destino;
     rand bit [pckg_sz-9 : 0] payload;
     rand int unsigned        delay;     // <-- Tentativo
@@ -19,7 +20,6 @@ class trans_bus #(parameter pckg_sz = 16);
     // ----------------------------------------------------------
     // ── Campos no aleatorizables
     // ----------------------------------------------------------
-    bit                 [7 : 0]  id_origen;      // definida por el Driver_controller
     int unsigned                 id;             // id de la transaccion
     static int unsigned          n_created = 0;  // cantidad de transacciones
     bus_config                   cfg;            // puntero al archivo de config
@@ -33,6 +33,11 @@ class trans_bus #(parameter pckg_sz = 16);
     // ----------------------------------------------------------
     // ── Constraints
     // ----------------------------------------------------------
+    // ── Define los valores que puede tomar el id_origen
+    constraint origen_range_c {
+        id_origen inside {[0 : cfg.drvrs-1]};
+    }
+
     // ── Define los valores que puede tomar id_destino
     constraint destino_dist_c {
         // ── Distribucion con peso para el id_destino
@@ -58,6 +63,7 @@ class trans_bus #(parameter pckg_sz = 16);
     // ── Constraint_mode() (encendido y apagado de los constraints)
     //===================================================================
     function void pre_randomize();
+        origen_range_c.constraint_mode  (cfg.is_enabled("origen_range_c"));     //<-- Puede no ser necesario apagarse.
         destino_dist_c.constraint_mode  (cfg.is_enabled("destino_dist_c"));
         dealay_range_c.constraint_mode  (cfg.is_enabled("dealay_range_c"));
         payload_range_c.constraint_mode (cfg.is_enabled("payload_range_c"));

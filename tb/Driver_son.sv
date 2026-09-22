@@ -9,16 +9,16 @@
 
 class Driver_son #(parameter pckg_sz = 16);
 
-    int driver_id;
+    int       driver_id;
+    trans_bus cola_tx [$];
 
     virtual bus_if #(.pckg_sz(pckg_sz)) v_bif;
-    trans_bus_mbx drvr_son_mbx;
-    trans_bus cola_tx[$];
+    trans_bus_mbx                       drvr_son_mbx;
 
     function new(
         int                                 driver_id,
         virtual bus_if #(.pckg_sz(pckg_sz)) v_bif,
-        mailbox        #(trans_bus)         drvr_son_mbx
+        trans_bus_mbx                       drvr_son_mbx
     );
         this.driver_id    = driver_id;
         this.v_bif        = v_bif;

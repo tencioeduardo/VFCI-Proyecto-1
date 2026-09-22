@@ -39,6 +39,7 @@ class bus_config;
 
     static string CNAMES[] = '{"destino_dist_c",
                                "dealay_range_c",
+                               "origen_range_c",
                                "payload_range_c"};
 
     // ── Permite verificar si un constraint esta activo
