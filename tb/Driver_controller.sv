@@ -1,12 +1,12 @@
 //============================================
-// Clase Driver_controlador (capa de comando)
+// Clase Driver_controller (capa de comando)
 //============================================
 // Conexion al Agente por medio de: agent_drvr_mbx
 // Conexion al Driver_hijo por medio de: drvr_son_mbx
 // Tipo de paquetes en el mailbox: trans_bus
 
-`ifndef DRIVER_CONTROLLER
-`define DRIVER_CONTROLLER
+`ifndef DRIVER_CONTROLLER_SV
+`define DRIVER_CONTROLLER_SV
 
 class Driver_controller #(parameter pckg_sz = 16);
 
