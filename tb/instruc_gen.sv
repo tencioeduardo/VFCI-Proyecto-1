@@ -6,7 +6,7 @@
 `define INSTRUC_GEN_SV
 
 // ── Definicion de los tipos de transacciones especificadas por el Generador
-typedef enum {generar_aleatoria, generar_dirigida, generar_secuencia} instruc_tipo_e;
+typedef enum {trans_aleatoria, trans_dirigida, trans_secuencial} instruc_tipo_e;
 
 // ── Definicion de mailbox con datos de tipo instruc_gen
 typedef mailbox #(instruc_gen) instruc_gen_mbx;
