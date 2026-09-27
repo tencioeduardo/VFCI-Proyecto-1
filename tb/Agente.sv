@@ -39,7 +39,7 @@ class Agente;
             case (instruc.tipo)
                 trans_aleatoria:  generar_aleatoria();
                 trans_dirigida:   generar_dirigida(instruc);
-                trans_secuencial: generar_secuencia(instruc.cantidad);
+                trans_secuencial: generar_secuencia(instruc);
 
                 default: generar_aleatoria();
             endcase
@@ -70,7 +70,7 @@ class Agente;
             t.set_id_origen  -> id_origen  == t.id_origen;
             t.set_id_destino -> id_destino == t.id_destino;
             t.set_payload    -> payload    == t.payload;
-            t.set_dealy      -> delay      == t.delay;
+            t.set_delay      -> delay      == t.delay;
         }) $display("T=%0t [AGENTE] Specific transaction failed.", $time);
 
         agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
@@ -80,13 +80,16 @@ class Agente;
 
     // ── Proceso 3: Se genera una secuencia de transacciones de forma aleatoria
     //               (delega por completo a la aleatorizacion).
-    task generar_secuencia(int unsigned n);
-        $display("T=%0t [AGENTE] Sequence of %0d random transactions requested.", $time, n);
+    task generar_secuencia(instruc_gen t);
+        $display("T=%0t [AGENTE] Sequence of %0d random transactions requested.", $time,
+                t.cantidad);
 
-        repeat(n) begin
+        repeat(t.cantidad) begin
             trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
 
-            if(!trans.randomize()) $display("T=%0t [AGENTE] Random transaction failed.", $time);
+            if(!trans.randomize() with {
+                t.set_delay -> delay == t.delay;
+            }) $display("T=%0t [AGENTE] Random transaction failed.", $time);
 
             agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
             agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard

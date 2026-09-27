@@ -8,9 +8,6 @@
 // ── Definicion de los tipos de transacciones especificadas por el Generador
 typedef enum {trans_aleatoria, trans_dirigida, trans_secuencial} instruc_tipo_e;
 
-// ── Definicion de mailbox con datos de tipo instruc_gen
-typedef mailbox #(instruc_gen) instruc_gen_mbx;
-
 class instruc_gen #(parameter pckg_sz = 16);
 
     instruc_tipo_e tipo;    // <-- Definido por el Generador
@@ -40,5 +37,8 @@ class instruc_gen #(parameter pckg_sz = 16);
     int unsigned cantidad;
 
 endclass : instruc_gen
+
+// ── Definicion de mailbox con datos de tipo instruc_gen
+typedef mailbox #(instruc_gen) instruc_gen_mbx;
 
 `endif // INSTRUC_GEN_SV
