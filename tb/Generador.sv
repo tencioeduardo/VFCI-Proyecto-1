@@ -8,7 +8,6 @@
 `define GENERADOR_SV
 
 class Generador;
-
     instruc_gen_mbx gen_agent_mbx;
     order_test_mbx  tst_gen_mbx;
     bus_config      cfg;            // puntero al archivo de config
@@ -27,7 +26,6 @@ class Generador;
     // ── Proceso padre: Inicia el agente (clasifica las instrucciones)
     task run();
         $display("T=%0t [GENERADOR] Starting...", $time);
-
         order_test order;   // <-- Objeto de orden proveniente del Test
 
         forever begin
@@ -39,10 +37,10 @@ class Generador;
                 scen_aleatorio_sec:        escenario_aleatorio_sec(order);
                 scen_aleatorio:            escenario_aleatorio();
                 scen_arbitraje_simultaneo: escenario_arbitraje_simultaneo();
-                scen_broadcast:            escenario_broadcast();
+                scen_broadcast:            escenario_broadcast(order);
                 scen_invalido:             escenario_invalido();
                 scen_dispSos:              escenario_dispSostenida(order);
-                scen_autodirec:            escenario_autoenvio();
+                scen_autodirec:            escenario_autoenvio(order);
 
                 default: escenario_aleatorio();
             endcase
@@ -53,11 +51,14 @@ class Generador;
     // ── Proceso 1: Delega al mecanismo de aleatorizacion (secuencial)
     task escenario_aleatorio_sec(order_test order);
         $display("T=%0t [GENERADOR] Generating %d random scenarios...", $time,
-                order.cantidad_secuencia);
+                order.cantidad);
         instruc_gen instruction = new();
 
-        instruction.tipo     = trans_secuencial;
-        instruction.cantidad = order.cantidad_secuencia;
+        instruction.tipo = trans_secuencial;
+
+        instruction.cantidad  = order.cantidad;
+        instruction.delay     = order.delay_secuencia;  // <-- Tiempo entre transacciones
+        instruction.set_delay = 1'b1;
 
         gen_agent_mbx.put(instruction);
     endtask
@@ -65,7 +66,6 @@ class Generador;
 
     // ── Proceso 2: Delega al mecanismo de aleatorizacion
     task escenario_aleatorio();
-
         $display("T=%0t [GENERADOR] Generating a random scenario...", $time);
         instruc_gen instruction = new();
 
@@ -77,12 +77,11 @@ class Generador;
 
     // ── Proceso 3: Genera un trafico para arbitraje simultaneo
     task escenario_arbitraje_simultaneo();
-
         $display("T=%0t [GENERADOR] Generating simultaneous traffic...", $time);
 
         // ── Genera paquetes para los 4 dispositivos
         //    (el payload se delega a la aleatorizacion).
-        for (int i = 0; i < 4; i++) begin
+        for(int i = 0; i < 4; i++) begin
             instruc_gen instruction = new();
 
             instruction.tipo = trans_dirigida;
@@ -101,34 +100,30 @@ class Generador;
 
 
     // ── Proceso 4: Realiza el escenario de broadcast
-    task escenario_broadcast();
+    task escenario_broadcast(order_test order);
 
-        $display("T=%0t [GENERADOR] Generating a broadcast scenario on all devices...", $time);
+        $display("T=%0t [GENERADOR] Generating a broadcast scenario on terminal %0d...", $time,
+                order.terminal_origen);
+        instruc_gen instruction = new();
 
-        // ── Genera paquetes de broadcast para los 4 dispositivos
-        //    (el payload se delega a la aleatorizacion).
-        for (int i = 0; i < 4; i++) begin
-            instruc_gen instruction = new();
+        instruction.tipo = trans_dirigida;
 
-            instruction.tipo = trans_dirigida;
+        instruction.id_origen      = order.terminal_origen;
+        instruction.set_id_origen  = 1'b1;
+        instruction.id_destino     = 8'hFF; // <-- ID de broadcast
+        instruction.set_id_destino = 1'b1;
+        instruction.delay          = 0;
+        instruction.set_delay      = 1'b1;
+        instruction.set_payload    = 1'b0;
 
-            instruction.id_origen      = i;
-            instruction.set_id_origen  = 1'b1;
-            instruction.id_destino     = 8'hFF; // <-- ID de broadcast
-            instruction.set_id_destino = 1'b1;
-            instruction.delay          = 5;     // <-- Da tiempo a cada dispositivo para broadcast
-            instruction.set_delay      = 1'b1;
-            instruction.set_payload    = 1'b0;
-
-            gen_agent_mbx.put(instruction);
-        end
+        gen_agent_mbx.put(instruction);
     endtask
 
 
     // ── Proceso 5: Realiza un escenario invalido
     task escenario_invalido();
 
-        $display("T=%0t [GENERADOR] Generating an invalid scenario on all devices...", $time);
+        $display("T=%0t [GENERADOR] Generating an invalid scenario on all terminals...", $time);
 
         // ── Genera paquetes invalidos en los 4 dispositivos.
         for (int i = 0; i < 4; i++) begin
@@ -151,9 +146,9 @@ class Generador;
     // ── Proceso 6: Realiza un escenario de disponibildad sostenida
     task escenario_dispSostenida(order_test order);
         $display("T=%0t [GENERADOR] Terminal %0d requesting bus %0d times in a row...", $time,
-                order.terminal_origen, order.cantidad_secuencia);
+                order.terminal_origen, order.cantidad);
 
-        repeat(order.cantidad_secuencia) begin
+        repeat(order.cantidad) begin
             instruc_gen instruction = new();
 
             instruction.tipo = trans_dirigida;

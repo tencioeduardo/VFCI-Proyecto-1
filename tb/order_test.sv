@@ -6,11 +6,8 @@
 `define ORDER_TEST_SV
 
 // ── Definicion de las ordenes dadas por el Test
-typedef enum data_type {
-
-    // --------------------------------------------------
-    // ── Escenarios para capacidades y casos esquina
-    // --------------------------------------------------
+//    (escenarios para capacidades y casos esquina).
+typedef enum {
     scen_aleatorio_sec,
     scen_aleatorio,
     scen_arbitraje_simultaneo,
@@ -29,10 +26,10 @@ class order_test;
 
     orden_tipo_e tipo;
 
-    int unsigned          cantidad_secuencia;
+    int unsigned          cantidad;
     int unsigned          delay_secuencia;
     bit          [7 : 0]  terminal_origen;
 
-endclass
+endclass : order_test
 
 `endif // ORDER_TEST_SV
