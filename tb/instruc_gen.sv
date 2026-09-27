@@ -26,6 +26,15 @@ class instruc_gen #(parameter pckg_sz = 16);
 
 
     // ----------------------------------------------------------
+    // ── Datos para fijar valores o aleatorizarlos
+    // ----------------------------------------------------------
+    bit set_id_destino;
+    bit set_id_origen;
+    bit set_payload;
+    bit set_dealy;
+
+
+    // ----------------------------------------------------------
     // ── Dato para transacciones secuenciales (aleatorias)
     // ----------------------------------------------------------
     int unsigned cantidad;

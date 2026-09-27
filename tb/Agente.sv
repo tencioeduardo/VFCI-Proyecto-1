@@ -8,7 +8,7 @@
 `ifndef AGENTE_SV
 `define AGENTE_SV
 
-class Agente #(parameter pckg_sz = 16);
+class Agente;
 
     instruc_gen_mbx gen_agent_mbx;
     trans_bus_mbx   agent_scorb_mbx;
@@ -46,33 +46,40 @@ class Agente #(parameter pckg_sz = 16);
         end
     endtask
 
+
     // ── Proceso 1: Se generan transacciones de forma aleatoria
+    //               (delega por completo a la aleatorizacion).
     task generar_aleatoria();
         $display("T=%0t [AGENTE] Random transaction requested.", $time);
-
         trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
+
         if(!trans.randomize()) $display("T=%0t [AGENTE] Random transaction failed.", $time);
 
         agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
         agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard
     endtask
 
+
     // ── Proceso 2: Se generan transacciones de forma dirigida
+    //               (permite delegar algunos campos a la aleatorizacion).
     task generar_dirigida(instruc_gen t);
         $display("T=%0t [AGENTE] Specific transaction requested.", $time);
-
         trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
 
-        trans.id_destino = t.id_destino;
-        trans.id_origen  = t.id_origen;
-        trans.payload    = t.payload;
-        trans.delay      = t.delay;
+        if (!trans.randomize() with {
+            t.set_id_origen  -> id_origen  == t.id_origen;
+            t.set_id_destino -> id_destino == t.id_destino;
+            t.set_payload    -> payload    == t.payload;
+            t.set_dealy      -> delay      == t.delay;
+        }) $display("T=%0t [AGENTE] Specific transaction failed.", $time);
 
         agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
         agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard
     endtask
 
+
     // ── Proceso 3: Se genera una secuencia de transacciones de forma aleatoria
+    //               (delega por completo a la aleatorizacion).
     task generar_secuencia(int unsigned n);
         $display("T=%0t [AGENTE] Sequence of %0d random transactions requested.", $time, n);
 
