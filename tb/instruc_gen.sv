@@ -31,7 +31,7 @@ class instruc_gen #(parameter pckg_sz = 16);
     bit set_id_destino;
     bit set_id_origen;
     bit set_payload;
-    bit set_dealy;
+    bit set_delay;
 
 
     // ----------------------------------------------------------
