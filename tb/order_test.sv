@@ -9,22 +9,15 @@
 typedef enum data_type {
 
     // --------------------------------------------------
-    // ── Escenarios para capacidades (CAP-01 a CAP-25)
+    // ── Escenarios para capacidades y casos esquina
     // --------------------------------------------------
     scen_aleatorio_sec,
     scen_aleatorio,
     scen_arbitraje_simultaneo,
     scen_broadcast,
     scen_invalido,
-    scen_pckg_sz,
-    scen_reset,     // <-- Tentativo
-
-    // --------------------------------------------------
-    // ── Escenarios para casos esquina ()
-    // --------------------------------------------------
-    scenEsq_disponibilidad,
-    scenEsq_autodirec,
-    scenEsq_tempo
+    scen_dispSos,
+    scen_autodirec
 
 } orden_tipo_e;
 
@@ -32,10 +25,13 @@ typedef enum data_type {
 typedef mailbox #(order_test) order_test_mbx;
 
 
-class order_test #(parameter pckg_sz = 16);
+class order_test;
 
-    orden_tipo_e orden;
-    int unsigned cantidad;
+    orden_tipo_e tipo;
+
+    int unsigned          cantidad_secuencia;
+    int unsigned          delay_secuencia;
+    bit          [7 : 0]  terminal_origen;
 
 endclass
 
