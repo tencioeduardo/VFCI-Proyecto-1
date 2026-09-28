@@ -9,6 +9,23 @@
 // Es autónomo frente a reset: lee v_bif.reset directamente y se
 // auto-pausa (no filtra, no decide nada más allá de no muestrear).
 //
+// FIFO de recepción (cola_rx): espejo, del lado del Monitor, de lo
+// que `cola_tx` es para Driver_son. Es una cola dinámica (espacio
+// "infinito") que modela la FIFO de RX del dispositivo:
+//   - `muestrear_eventos()` (el "transductor", bus -> cola_rx) es
+//     quien LLENA cola_rx cada vez que detecta un flanco de push.
+//     Su lógica de detección de flancos, reset, `last_D_pop` y el
+//     reporte de EV_TX_POP no cambian.
+//   - `despachar_rx()` (cola_rx -> entorno) es un proceso
+//     INDEPENDIENTE de `muestrear_eventos()` que vacía cola_rx hacia
+//     `mon_son_mbx`, igual que `recibir_del_padre()` en Driver_son
+//     es independiente de `manejar_protocolo()`. A diferencia de
+//     `manejar_protocolo()` (que sí está ligado a
+//     `@(posedge v_bif.clk)`), `despachar_rx()` NO está ligado a
+//     reloj: drena apenas hay algo en la cola, para no romper la
+//     decisión 3.D-1 (broadcast-to-self debe reportar EV_RX_PUSH y
+//     EV_TX_POP en el mismo ciclo).
+//
 // NOTA: v_bif se declara sin sufijo de modport, igual que hace
 // Driver_son con `driver_mp`, para mantener el mismo estilo del
 // código existente. Conceptualmente el hijo solo LEE señales, lo
@@ -22,6 +39,9 @@ class Monitor_son #(parameter pckg_sz = 16);
     bit               prev_push;
     bit               prev_pop;
     bit [pckg_sz-1:0] last_D_pop;
+
+    // FIFO de RX: cola dinámica, espejo de cola_tx en Driver_son.
+    trans_bus cola_rx [$];
 
     bus_config cfg;
 
@@ -40,6 +60,7 @@ class Monitor_son #(parameter pckg_sz = 16);
     task run();
         fork
             muestrear_eventos();
+            despachar_rx();
         join_none
     endtask
 
@@ -64,6 +85,9 @@ class Monitor_son #(parameter pckg_sz = 16);
             end
 
             // 3) Flanco 0->1 en push (RX). Independiente del de pop.
+            //    Se encola en cola_rx (FIFO de RX); despachar_rx() es
+            //    quien la vacía hacia mon_son_mbx, de forma
+            //    independiente a este proceso.
             if (v_bif.push && !prev_push) begin
                 t = new();
                 t.mon_kind   = EV_RX_PUSH;
@@ -71,7 +95,7 @@ class Monitor_son #(parameter pckg_sz = 16);
                 t.id_origen  = '0; // ver DESVIACIONES en NOTAS_INTEGRACION.md
                 t.id_destino = v_bif.D_push[pckg_sz-1 -: 8];
                 t.payload    = v_bif.D_push[pckg_sz-9 : 0];
-                mon_son_mbx.put(t);
+                cola_rx.push_back(t);
             end
 
             // 4) Flanco 0->1 en pop (TX). Independiente del de push.
@@ -91,12 +115,32 @@ class Monitor_son #(parameter pckg_sz = 16);
         end
     endtask
 
+    // Vacía cola_rx hacia mon_son_mbx. Proceso independiente de
+    // muestrear_eventos() (igual que recibir_del_padre() es
+    // independiente de manejar_protocolo() en Driver_son).
+    // Deliberadamente NO está ligado a @(posedge v_bif.clk): drena
+    // apenas hay algo en la cola, en el mismo ciclo en que se
+    // encoló, para no romper la decisión 3.D-1 (broadcast-to-self
+    // debe seguir reportando EV_RX_PUSH y EV_TX_POP en el mismo
+    // ciclo que hoy).
+    task despachar_rx();
+        trans_bus t;
+        forever begin
+            wait (cola_rx.size() > 0);
+            t = cola_rx.pop_front();
+            mon_son_mbx.put(t);
+        end
+    endtask
+
     // Reinicia el estado interno del hijo (llamado desde
     // muestrear_eventos en reset, y disponible para uso externo).
+    // También limpia cola_rx: no se arrastran eventos pendientes de
+    // antes del reset.
     function void reset();
         prev_push  = 1'b0;
         prev_pop   = 1'b0;
         last_D_pop = '0;
+        cola_rx.delete();
     endfunction
 
 endclass
