@@ -76,14 +76,24 @@ class Driver_son #(parameter pckg_sz = 16);
         empaquetar_datos = {t.id_destino, t.payload};
     endfunction
 
-    // ── Funcion 2: Manejar los resets
-    function reset();
+
+    // ── Manejar los resets
+    task reset();
+        @(negedge v_bif.clk);   //<-- Sincroniza con manejar_protocolo().
+
+        v_bif.reset <= 1'b1;
         v_bif.pndng <= 1'b0;
         v_bif.D_pop <= '0;
 
         cola_tx.delete();
-        @(posedge v_bif.clk);
-    endfunction
+
+        // ── Esperar a un flanco postiivo
+        repeat (1) @(posedge v_bif.clk);
+
+        // ── Desactivar reset
+        @(negedge v_bif.clk);
+        v_bif.reset <= 1'b0;
+    endtask
 
 endclass : Driver_son
 

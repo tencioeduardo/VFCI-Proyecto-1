@@ -10,10 +10,10 @@
 
 class Driver_controller #(parameter pckg_sz = 16);
 
-    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];              // Externo x
-    trans_bus_mbx                       drvr_son_mbx [4];       // Propio
-    trans_bus_mbx                       agent_drvr_mbx;         // Externo x
-    Driver_son                          children [4];           // Propio
+    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
+    trans_bus_mbx                       drvr_son_mbx [4];
+    trans_bus_mbx                       agent_drvr_mbx;
+    Driver_son                          children [4];
 
     function new(
         trans_bus_mbx                       agent_drvr_mbx,
@@ -51,6 +51,20 @@ class Driver_controller #(parameter pckg_sz = 16);
         end
     endtask
 
+
+    // ── Proceso 2: Se aplica reset a los drivers hijos
+    task son_reset();
+        $display("T=%0t [DRIVER_CONTROLLER] Starting reset...", $time);
+
+        fork
+            children[0].reset();
+            children[1].reset();
+            children[2].reset();
+            children[3].reset();
+        join
+
+        $display("T=%0t [DRIVER_CONTROLLER] Reset completed.", $time);
+    endtask
 
 endclass : Driver_controller
 

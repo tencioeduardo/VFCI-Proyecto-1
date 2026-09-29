@@ -6,9 +6,9 @@
 `define BUS_IF_SV
 
 interface bus_if #(parameter pckg_sz = 16)(
-    input logic clk,
-    input logic reset
+    input logic clk
 );
+    logic                 reset;
     logic                 pndng;
     logic                 push;
     logic                 pop;
@@ -19,14 +19,24 @@ interface bus_if #(parameter pckg_sz = 16)(
     // input  -> puede leer
     // output -> puede manejar (escribir)
     modport driver_mp (
-        input  clk, reset, pop, push, D_push,
-        output pndng, D_pop
+        input  clk, pop, push, D_push,
+        output reset, pndng, D_pop
     );
+
 
     // Vista de la interfaz para el Monitor
     // input  -> puede leer
     modport monitor_mp(
         input  clk, reset, pop, push, D_push, D_pop, pndng
+    );
+
+
+    // Vista de la interfaz para el DUT
+    // input  -> puede leer
+    // output -> puede manejar (escribir)
+    modport dut_mp(
+        input clk, reset, pndng, D_pop,
+        output pop, push, D_push
     );
 
 endinterface : bus_if
