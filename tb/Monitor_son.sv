@@ -43,8 +43,6 @@ class Monitor_son #(parameter pckg_sz = 16);
     // FIFO de RX: cola dinámica, espejo de cola_tx en Driver_son.
     trans_bus cola_rx [$];
 
-    bus_config cfg;
-
     function new(int monitor_id,
                  virtual bus_if #(.pckg_sz(pckg_sz)) v_bif,
                  trans_bus_mbx mon_son_mbx);
@@ -54,7 +52,6 @@ class Monitor_son #(parameter pckg_sz = 16);
         this.prev_push   = 1'b0;
         this.prev_pop    = 1'b0;
         this.last_D_pop  = '0;
-        this.cfg         = bus_config::get();
     endfunction
 
     task run();

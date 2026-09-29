@@ -63,30 +63,6 @@ class trans_bus #(parameter pckg_sz = 16);
                          id, id_origen, id_destino, payload, delay, mon_kind.name(), device_id);
     endfunction
 
-    // ---- Métodos añadidos ----------------------------------------
-
-    // Comparación de contenido "de negocio": ignora id, delay,
-    // mon_kind y device_id (son metadatos de trazabilidad/observación,
-    // no del paquete transmitido por el bus).
-    virtual function bit compare(trans_bus rhs);
-        if (rhs == null) return 1'b0;
-        return (this.id_origen  == rhs.id_origen) &&
-               (this.id_destino == rhs.id_destino) &&
-               (this.payload    == rhs.payload);
-    endfunction
-
-    virtual function bit is_broadcast();
-        return (id_destino == cfg.id_broadcast);
-    endfunction
-
-    virtual function bit is_valid_dest();
-        return (id_destino < cfg.drvrs);
-    endfunction
-
-    virtual function bit is_invalid_dest();
-        return !is_valid_dest() && !is_broadcast();
-    endfunction
-
 endclass
 
 `endif // TRANS_BUS_SV
