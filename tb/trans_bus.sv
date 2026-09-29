@@ -65,21 +65,6 @@ class trans_bus #(parameter pckg_sz = 16);
 
     // ---- Métodos añadidos ----------------------------------------
 
-    // Copia "de contenido". Evita aliasing cuando el mismo handle se
-    // reparte a varios consumidores (p.ej. Agente -> Driver y
-    // Agente -> Scoreboard comparten hoy el mismo handle).
-    virtual function trans_bus copy();
-        trans_bus t = new();
-        t.id_origen  = this.id_origen;
-        t.id_destino = this.id_destino;
-        t.payload    = this.payload;
-        t.delay      = this.delay;
-        t.mon_kind   = this.mon_kind;
-        t.device_id  = this.device_id;
-        t.id         = this.id; // se conserva para trazabilidad en logs
-        return t;
-    endfunction
-
     // Comparación de contenido "de negocio": ignora id, delay,
     // mon_kind y device_id (son metadatos de trazabilidad/observación,
     // no del paquete transmitido por el bus).
