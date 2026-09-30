@@ -25,8 +25,8 @@ class Generador;
 
     // ── Proceso padre: Inicia el agente (clasifica las instrucciones)
     task run();
+      	order_test order;   // <-- Objeto de orden proveniente del Test
         $display("T=%0t [GENERADOR] Starting...", $time);
-        order_test order;   // <-- Objeto de orden proveniente del Test
 
         forever begin
             $display("T=%0t [GENERADOR] Waiting for an order...", $time);
@@ -50,9 +50,9 @@ class Generador;
 
     // ── Proceso 1: Delega al mecanismo de aleatorizacion (secuencial)
     task escenario_aleatorio_sec(order_test order);
+      	instruc_gen instruction = new();
         $display("T=%0t [GENERADOR] Generating %d random scenarios...", $time,
                 order.cantidad);
-        instruc_gen instruction = new();
 
         instruction.tipo = trans_secuencial;
 
@@ -66,8 +66,8 @@ class Generador;
 
     // ── Proceso 2: Delega al mecanismo de aleatorizacion
     task escenario_aleatorio();
+      	instruc_gen instruction = new();
         $display("T=%0t [GENERADOR] Generating a random scenario...", $time);
-        instruc_gen instruction = new();
 
         instruction.tipo = trans_aleatoria;
 
@@ -101,10 +101,9 @@ class Generador;
 
     // ── Proceso 4: Realiza el escenario de broadcast
     task escenario_broadcast(order_test order);
-
+		instruc_gen instruction = new();
         $display("T=%0t [GENERADOR] Generating a broadcast scenario on terminal %0d...", $time,
                 order.terminal_origen);
-        instruc_gen instruction = new();
 
         instruction.tipo = trans_dirigida;
 
@@ -166,9 +165,9 @@ class Generador;
 
     // ── Proceso 7: Realiza un escenario de autoenvio
     task escenario_autoenvio(order_test order);
+      	instruc_gen instruction = new();
         $display("T=%0t [GENERADOR] Terminal %0d sending to itself...", $time,
                 order.terminal_origen);
-        instruc_gen instruction = new();
 
         instruction.tipo = trans_dirigida;
 

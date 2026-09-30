@@ -18,9 +18,6 @@ typedef enum {
 
 } orden_tipo_e;
 
-// ── Definicion de mailbox con datos de tipo order_test
-typedef mailbox #(order_test) order_test_mbx;
-
 
 class order_test;
 
@@ -31,5 +28,8 @@ class order_test;
     bit          [7 : 0]  terminal_origen;
 
 endclass : order_test
+
+// ── Definicion de mailbox con datos de tipo order_test
+typedef mailbox #(order_test) order_test_mbx;
 
 `endif // ORDER_TEST_SV
