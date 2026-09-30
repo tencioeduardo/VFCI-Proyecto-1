@@ -27,9 +27,9 @@ class Agente;
 
     // ── Proceso padre: Inicia el agente (clasifica las instrucciones)
     task run();
+      	instruc_gen instruc;    // <-- Objeto de instruccion proveniente del generador
         $display("T=%0t [AGENTE] Starting...", $time);
-
-        instruc_gen instruc;    // <-- Objeto de instruccion proveniente del generador
+        
 
         forever begin
             $display("T=%0t [AGENTE] Waiting for an instruction...", $time);
@@ -50,8 +50,9 @@ class Agente;
     // ── Proceso 1: Se generan transacciones de forma aleatoria
     //               (delega por completo a la aleatorizacion).
     task generar_aleatoria();
+      	trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
         $display("T=%0t [AGENTE] Random transaction requested.", $time);
-        trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
+        
 
         if(!trans.randomize()) $display("T=%0t [AGENTE] Random transaction failed.", $time);
 
@@ -63,8 +64,9 @@ class Agente;
     // ── Proceso 2: Se generan transacciones de forma dirigida
     //               (permite delegar algunos campos a la aleatorizacion).
     task generar_dirigida(instruc_gen t);
+      	trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
         $display("T=%0t [AGENTE] Specific transaction requested.", $time);
-        trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
+        
 
         if (!trans.randomize() with {
             t.set_id_origen  -> id_origen  == t.id_origen;
