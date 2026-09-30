@@ -1,6 +1,10 @@
 //===================================================================
 // Clase bus_config para definir tipo de mailbox: trans_bus_mbx
 //===================================================================
+`ifndef PCKG_SZ
+  `define PCKG_SZ 16  
+
+`endif // PCKG_SZ
 
 `ifndef BUS_CONFIG_SV
 `define BUS_CONFIG_SV
@@ -33,6 +37,24 @@ class bus_config;
 
 
     // ----------------------------------------------------------
+    // ── Parametros de los escenarios dirigidos del Test
+    // ----------------------------------------------------------
+    bit          [7 : 0]  broadcast_origen    = 8'd0;
+    bit          [7 : 0]  acaparador_origen   = 8'd1;
+    bit          [7 : 0]  autoenvio_origen    = 8'd2;
+    int unsigned          acaparador_cantidad = 10;
+    int unsigned          n_soak              = 20;
+    int unsigned          soak_delay          = 2;
+
+
+    // ----------------------------------------------------------
+    // ── Control general del Test
+    // ----------------------------------------------------------
+    int unsigned timeout       = 20000;   // <-- Ciclos antes de que dispare el watchdog
+    int unsigned drain_cycles  = 20;      // <-- Ciclos de espera al final antes de reportar
+
+
+    // ----------------------------------------------------------
     // ── Manejo de constraints en forma de arreglo asociativo
     // ----------------------------------------------------------
     bit cmode [string];
@@ -54,8 +76,17 @@ class bus_config;
     local function void get_int(string name, ref int unsigned var_);
         int unsigned tmp;
         if ($value$plusargs({name, "=%d"}, tmp)) begin
-            var_ = tmp;
-            $display("  [CFG] %-22s = %0d (from plusarg)", name, tmp);
+                var_ = tmp;
+                $display("  [CFG] %-22s = %0d (from plusarg)", name, tmp);
+        end
+    endfunction
+
+    // ── Igual que get_int, pero con campos de 8 bits (IDs de terminal)
+    local function void get_byte(string name, ref bit [7:0] var_);
+        int unsigned tmp;
+        if ($value$plusargs({name, "=%d"}, tmp)) begin
+                var_ = tmp[7:0];
+                $display("  [CFG] %-22s = %0d (from plusarg)", name, tmp[7:0]);
         end
     endfunction
 
@@ -71,6 +102,16 @@ class bus_config;
         get_int("max_delay",           max_delay);
         get_int("payload_min",         payload_min);
         get_int("payload_max",         payload_max);
+
+        get_byte("broadcast_origen",    broadcast_origen);
+        get_byte("acaparador_origen",   acaparador_origen);
+        get_int ("acaparador_cantidad", acaparador_cantidad);
+        get_byte("autoenvio_origen",    autoenvio_origen);
+        get_int ("n_soak",              n_soak);
+        get_int ("soak_delay",          soak_delay);
+
+        get_int("timeout",       timeout);
+        get_int("drain_cycles",  drain_cycles);
 
         // ── Permite activar o desactivar los constraints: +cm_<nombre>=0/1
         foreach (CNAMES[i]) begin

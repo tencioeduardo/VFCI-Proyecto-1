@@ -7,7 +7,7 @@
 `ifndef DRIVER_SON_SV
 `define DRIVER_SON_SV
 
-class Driver_son #(parameter pckg_sz = 16);
+class Driver_son #(parameter pckg_sz = `PCKG_SZ);
 
     int       driver_id;
     trans_bus cola_tx [$];

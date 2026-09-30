@@ -8,7 +8,7 @@
 `ifndef DRIVER_CONTROLLER_SV
 `define DRIVER_CONTROLLER_SV
 
-class Driver_controller #(parameter pckg_sz = 16);
+class Driver_controller #(parameter pckg_sz = `PCKG_SZ);
 
     virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
     trans_bus_mbx                       drvr_son_mbx [4];

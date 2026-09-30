@@ -5,7 +5,7 @@
 `ifndef BUS_IF_SV
 `define BUS_IF_SV
 
-interface bus_if #(parameter pckg_sz = 16)(
+interface bus_if #(parameter pckg_sz = `PCKG_SZ)(
     input logic clk
 );
     logic                 reset;

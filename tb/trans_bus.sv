@@ -5,9 +5,20 @@
 `ifndef TRANS_BUS_SV
 `define TRANS_BUS_SV
 
-typedef mailbox #(trans_bus) trans_bus_mbx;
+// -----------------------------------------------------------------
+//   EV_NONE     -> transaccion "normal" generada por Agente/Driver
+//   EV_RX_PUSH  -> el Monitor observo push=1 (recepcion) en un hijo
+//   EV_TX_POP   -> el Monitor observo pop=1  (transmision) en un hijo
+//   EV_RESET    -> centinela: el Monitor detecto reset en el DUT
+// -----------------------------------------------------------------
+typedef enum {
+    EV_NONE,
+    EV_RX_PUSH,
+    EV_TX_POP,
+    EV_RESET
+} mon_event_e;
 
-class trans_bus #(parameter pckg_sz = 16);
+class trans_bus #(parameter pckg_sz = `PCKG_SZ);
 
     // ----------------------------------------------------------
     // ── Campos aleatorizables
@@ -15,7 +26,7 @@ class trans_bus #(parameter pckg_sz = 16);
     rand bit [7 : 0]         id_origen;
     rand bit [7 : 0]         id_destino;
     rand bit [pckg_sz-9 : 0] payload;
-    rand int unsigned        delay;     // <-- Tentativo
+    rand int unsigned        delay;
 
     // ----------------------------------------------------------
     // ── Campos no aleatorizables
@@ -23,6 +34,13 @@ class trans_bus #(parameter pckg_sz = 16);
     int unsigned                 id;             // id de la transaccion
     static int unsigned          n_created = 0;  // cantidad de transacciones
     bus_config                   cfg;            // puntero al archivo de config
+
+
+    // ----------------------------------------------------------
+    // ── Campos para monitor y checker
+    // ----------------------------------------------------------
+    mon_event_e  mon_kind  = EV_NONE;
+    int unsigned device_id = 0;
 
 
     function new();
@@ -81,5 +99,7 @@ class trans_bus #(parameter pckg_sz = 16);
     endfunction
 
 endclass : trans_bus
+
+typedef mailbox #(trans_bus) trans_bus_mbx;
 
 `endif // TRANS_BUS_SV
