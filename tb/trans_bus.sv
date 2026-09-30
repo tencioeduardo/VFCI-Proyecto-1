@@ -20,7 +20,7 @@ typedef enum {
 
 typedef mailbox #(trans_bus) trans_bus_mbx;
 
-class trans_bus #(parameter pckg_sz = 16);
+class trans_bus #(parameter pckg_sz = `PCKG_SZ);
     rand bit [7 : 0]         id_origen;
     rand bit [7 : 0]         id_destino;
     rand bit [pckg_sz-9 : 0] payload;

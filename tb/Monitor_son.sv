@@ -31,7 +31,7 @@
 // código existente. Conceptualmente el hijo solo LEE señales, lo
 // que corresponde a `monitor_mp`.
 // -----------------------------------------------------------------
-class Monitor_son #(parameter pckg_sz = 16);
+class Monitor_son #(parameter pckg_sz = `PCKG_SZ;
     int                                  monitor_id;
     virtual bus_if #(.pckg_sz(pckg_sz))  v_bif;
     trans_bus_mbx                        mon_son_mbx;

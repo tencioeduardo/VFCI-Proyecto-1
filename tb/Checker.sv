@@ -12,7 +12,7 @@
 // viaja con el ID de origen, así que el Monitor tampoco lo conoce
 // del lado receptor.
 // -----------------------------------------------------------------
-class Checker #(parameter pckg_sz = 16);
+class Checker #(parameter pckg_sz = `PCKG_SZ);
 
     typedef enum {VALID_P2P, BROADCAST, INVALID} dest_kind_e;
 

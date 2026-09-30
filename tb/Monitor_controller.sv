@@ -10,7 +10,7 @@
 // Comparte los handles v_bif[4] con el Driver_controller: no
 // instancia interfaces propias (decisión 3.E).
 // -----------------------------------------------------------------
-class Monitor_controller #(parameter pckg_sz = 16);
+class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
     virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
     trans_bus_mbx                       mon_son_mbx [4];
     trans_bus_mbx                       mon2chk_mbx;
