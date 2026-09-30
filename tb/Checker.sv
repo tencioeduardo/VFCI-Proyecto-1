@@ -252,7 +252,12 @@ class Checker #(parameter pckg_sz = 16);
 
     // -------- Cierre del test -----------------------------------------
 
-    task wrap_up();
+    // Declarada como `function` (no `task`): no contiene ningún
+    // bloqueo (`@`, `#`, `get()`), así que ejecuta en tiempo cero
+    // igual que antes — pero al ser función puede invocarse también
+    // desde un bloque `final` del Environment, donde un `task` no
+    // compilaría.
+    function void wrap_up();
         int         tx_idx, rx_idx;
         dest_kind_e kind;
 
@@ -264,6 +269,11 @@ class Checker #(parameter pckg_sz = 16);
             if (tx_idx == -1) begin
                 n_missing_tx++;
                 $error("[CHK-FAIL] Falta TX_POP para %s", expected_q[i].convert2str());
+            end else begin
+                // Ya quedó contabilizado (aunque el match global haya
+                // fallado por el lado RX): no debe contar también como
+                // "unexpected" al final.
+                tx_q.delete(tx_idx);
             end
 
             if (kind == VALID_P2P || kind == BROADCAST) begin
@@ -273,6 +283,8 @@ class Checker #(parameter pckg_sz = 16);
                 if (rx_idx == -1) begin
                     n_missing_rx++;
                     $error("[CHK-FAIL] Falta RX_PUSH para %s", expected_q[i].convert2str());
+                end else begin
+                    rx_q.delete(rx_idx);
                 end
             end
         end
@@ -308,7 +320,7 @@ class Checker #(parameter pckg_sz = 16);
         end else begin
             $display(">>> TEST FAILED <<<");
         end
-    endtask
+    endfunction
 
 endclass
 
