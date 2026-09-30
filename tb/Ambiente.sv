@@ -55,7 +55,7 @@ class Ambiente #(parameter pckg_sz = 16) ;
 
 
     task reset();
-        drv_controller_inst.reset();
+        drv_controller_inst.son_reset();
     endtask
 
 
@@ -68,6 +68,13 @@ class Ambiente #(parameter pckg_sz = 16) ;
             sb_inst.run();
             gen_inst.run();
         join_none
+    endtask
+  
+  	// ── Tarea para drenar la simulación de forma segura
+    task wait_empty();
+        drv_controller_inst.wait_for_tx_empty();
+      
+        repeat (cfg.drain_cycles) @(posedge v_bif[0].clk);
     endtask
 
 

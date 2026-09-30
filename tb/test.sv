@@ -1,5 +1,3 @@
-`include "bus_includes.svh"   // Agrupa todos los `include
-
 program automatic Test (
     bus_if vif [4]
 );
@@ -21,7 +19,7 @@ program automatic Test (
         fork
             begin
                 repeat (cfg.timeout) @(posedge vif[0].clk);
-                $display("WATCHDOG: tiempo límite excedido");
+              	$display("T=%0t [TEST] Watchdog: Time limit exceeded.", $time);
                 $finish;
             end
         join_none
@@ -50,11 +48,11 @@ program automatic Test (
         //--------------------------------------------------------------
         // Drenar y reportar
         //--------------------------------------------------------------
-        repeat (cfg.drain_cycles) @(posedge vif[0].clk);
+      	env.wait_empty();  // Espera dinámica a que el sistema se limpie
         env.wrap_up();
 
 
-        $display("[%0t] Test finalizado.", $time);
+      	$display("T=%0t [TEST] Test completed.", $time);
         $finish;
     end
 
@@ -94,7 +92,7 @@ program automatic Test (
     task correr_terminal_acaparador();
         order_test orden = new();
 
-        orden.tipo            = scenEsq_disponibilidad;
+        orden.tipo            = scen_dispSos;
         orden.terminal_origen = cfg.acaparador_origen;
         orden.cantidad        = cfg.acaparador_cantidad;
 
@@ -122,7 +120,7 @@ program automatic Test (
         orden.delay_secuencia  = cfg.soak_delay;
 
         env.tst_gen_mbx.put(orden);
-        repeat (cfg.n_txn_soak * 5) @(posedge vif[0].clk);
+        repeat (cfg.n_soak * 5) @(posedge vif[0].clk);
     endtask
 
 endprogram : Test
