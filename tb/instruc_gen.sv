@@ -8,7 +8,7 @@
 // ── Definicion de los tipos de transacciones especificadas por el Generador
 typedef enum {trans_aleatoria, trans_dirigida, trans_secuencial} instruc_tipo_e;
 
-class instruc_gen #(parameter pckg_sz = 16);
+class instruc_gen #(parameter pckg_sz = `PCKG_SZ);
 
     instruc_tipo_e tipo;    // <-- Definido por el Generador
 
