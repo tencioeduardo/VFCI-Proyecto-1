@@ -5,7 +5,7 @@
 `ifndef AMBIENTE_SV
 `define AMBIENTE_SV
 
-class Ambiente #(parameter pckg_sz = 16) ;
+class Ambiente #(parameter pckg_sz = `PCKG_SZ) ;
     virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
     bus_config                          cfg;
 
@@ -31,12 +31,14 @@ class Ambiente #(parameter pckg_sz = 16) ;
     order_test_mbx  tst_gen_mbx;          // Generador - Test
 
 
+    // ── Se conecta la interfaz virtual
     function new(virtual bus_if #(.pckg_sz(pckg_sz)) v_bif[4]);
         this.v_bif = v_bif;
         this.cfg   = bus_config::get();
     endfunction
 
 
+    // ── Se construye (instancia) el ambiente por medio de sus elementos
     function void build();
         agent_drvr_mbx  = new();
         agent_scorb_mbx = new();
@@ -54,11 +56,13 @@ class Ambiente #(parameter pckg_sz = 16) ;
     endfunction
 
 
+    // ── Tarea de reset
     task reset();
         drv_controller_inst.son_reset();
     endtask
 
 
+    // ── Tarea para correr los elementos del ambiente
     task run();
         fork
             drv_controller_inst.run();
@@ -69,7 +73,8 @@ class Ambiente #(parameter pckg_sz = 16) ;
             gen_inst.run();
         join_none
     endtask
-  
+
+
   	// ── Tarea para drenar la simulación de forma segura
     task wait_empty();
         drv_controller_inst.wait_for_tx_empty();
@@ -78,6 +83,7 @@ class Ambiente #(parameter pckg_sz = 16) ;
     endtask
 
 
+    // ── Tarea para lanzar resultados del test
     function void wrap_up();
         check_inst.wrap_up();
     endfunction

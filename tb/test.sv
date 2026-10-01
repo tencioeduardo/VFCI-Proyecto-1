@@ -1,3 +1,7 @@
+//============================================
+// Programa del Test
+//============================================
+
 program automatic Test (
     bus_if vif [4]
 );
@@ -13,8 +17,7 @@ program automatic Test (
 
 
         //--------------------------------------------------------------
-        // Watchdog: vita que una combinación rara de plusargs
-        // cuelgue la simulación indefinidamente
+        // Watchdog: Tiempo limite para la simulación
         //--------------------------------------------------------------
         fork
             begin
@@ -56,15 +59,16 @@ program automatic Test (
         $finish;
     end
 
-
-    //-------------------------------------------------------------------
+    //--------------------------------------------------------------
+    // Tareas para los escenarios de pruebas
+    //--------------------------------------------------------------
     task correr_arbitraje_simultaneo();
         order_test orden = new();
 
         orden.tipo = scen_arbitraje_simultaneo;
 
         env.tst_gen_mbx.put(orden);
-        repeat (20) @(posedge vif[0].clk);
+        repeat (10) @(posedge vif[0].clk);
     endtask
 
 
@@ -75,7 +79,7 @@ program automatic Test (
         orden.terminal_origen = cfg.broadcast_origen;
 
         env.tst_gen_mbx.put(orden);
-        repeat (20) @(posedge vif[0].clk);
+        repeat (10) @(posedge vif[0].clk);
     endtask
 
 
@@ -85,7 +89,7 @@ program automatic Test (
         orden.tipo = scen_invalido;
 
         env.tst_gen_mbx.put(orden);
-        repeat (20) @(posedge vif[0].clk);
+        repeat (10) @(posedge vif[0].clk);
     endtask
 
 
@@ -97,7 +101,7 @@ program automatic Test (
         orden.cantidad        = cfg.acaparador_cantidad;
 
         env.tst_gen_mbx.put(orden);
-        repeat (30) @(posedge vif[0].clk);
+        repeat (10) @(posedge vif[0].clk);
     endtask
 
 
@@ -120,7 +124,7 @@ program automatic Test (
         orden.delay_secuencia  = cfg.soak_delay;
 
         env.tst_gen_mbx.put(orden);
-        repeat (cfg.n_soak * 5) @(posedge vif[0].clk);
+    	repeat (10) @(posedge vif[0].clk);
     endtask
 
 endprogram : Test
