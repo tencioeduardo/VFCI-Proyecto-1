@@ -1,0 +1,44 @@
+//=====================================
+// Interfaz de comunicacion con el DUT
+//=====================================
+
+`ifndef BUS_IF_SV
+`define BUS_IF_SV
+
+interface bus_if #(parameter pckg_sz = `PCKG_SZ)(
+    input logic clk
+);
+    logic                 reset;
+    logic                 pndng;
+    logic                 push;
+    logic                 pop;
+    logic [pckg_sz-1 : 0] D_pop;
+    logic [pckg_sz-1 : 0] D_push;
+
+    // Vista de la interfaz para el Driver
+    // input  -> puede leer
+    // output -> puede manejar (escribir)
+    modport driver_mp (
+        input  clk, pop, push, D_push,
+        output reset, pndng, D_pop
+    );
+
+
+    // Vista de la interfaz para el Monitor
+    // input  -> puede leer
+    modport monitor_mp(
+        input  clk, reset, pop, push, D_push, D_pop, pndng
+    );
+
+
+    // Vista de la interfaz para el DUT
+    // input  -> puede leer
+    // output -> puede manejar (escribir)
+    modport dut_mp(
+        input clk, reset, pndng, D_pop,
+        output pop, push, D_push
+    );
+
+endinterface : bus_if
+
+`endif // BUS_IF_SV
