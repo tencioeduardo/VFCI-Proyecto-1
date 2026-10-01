@@ -12,13 +12,13 @@ class Driver_son #(parameter pckg_sz = `PCKG_SZ);
     int       driver_id;
     trans_bus cola_tx [$];
 
-    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif;
-    trans_bus_mbx                       drvr_son_mbx;
+  	virtual bus_if #(.pckg_sz(pckg_sz)).driver_mp v_bif;
+    trans_bus_mbx                       		  drvr_son_mbx;
 
     function new(
-        int                                 driver_id,
-        virtual bus_if #(.pckg_sz(pckg_sz)) v_bif,
-        trans_bus_mbx                       drvr_son_mbx
+        int                                 		  driver_id,
+        virtual bus_if #(.pckg_sz(pckg_sz)).driver_mp v_bif,
+        trans_bus_mbx                       		  drvr_son_mbx
     );
         this.driver_id    = driver_id;
         this.v_bif        = v_bif;
@@ -42,7 +42,7 @@ class Driver_son #(parameter pckg_sz = `PCKG_SZ);
         trans_bus trans;
 
         forever begin
-            $display("T=%0t [DRIVER_SON %0d] Waiting for an instruction...");
+            $display("T=%0t [DRIVER_SON %0d] Waiting for an instruction...", $time, driver_id);
 
             drvr_son_mbx.get(trans);
             cola_tx.push_back(trans);

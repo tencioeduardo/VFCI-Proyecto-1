@@ -50,8 +50,8 @@ class bus_config;
     // ----------------------------------------------------------
     // ── Control general del Test
     // ----------------------------------------------------------
-    int unsigned timeout       = 20000;   // <-- Ciclos antes de que dispare el watchdog
-    int unsigned drain_cycles  = 20;      // <-- Ciclos de espera al final antes de reportar
+    int unsigned timeout       = 1000000;   // <-- Ciclos antes de que dispare el watchdog
+    int unsigned drain_cycles  = 500;       // <-- Ciclos de espera al final antes de reportar
 
 
     // ----------------------------------------------------------

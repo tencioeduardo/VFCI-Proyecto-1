@@ -10,14 +10,14 @@
 
 class Driver_controller #(parameter pckg_sz = `PCKG_SZ);
 
-    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
-    trans_bus_mbx                       drvr_son_mbx [4];
-    trans_bus_mbx                       agent_drvr_mbx;
-    Driver_son                          children [4];
+    virtual bus_if #(.pckg_sz(pckg_sz)).driver_mp v_bif [4];
+    trans_bus_mbx                       		  drvr_son_mbx [4];
+    trans_bus_mbx                       		  agent_drvr_mbx;
+    Driver_son                          		  children [4];
 
     function new(
-        trans_bus_mbx                       agent_drvr_mbx,
-        virtual bus_if #(.pckg_sz(pckg_sz)) v_bif[4]
+        trans_bus_mbx                       		  agent_drvr_mbx,
+        virtual bus_if #(.pckg_sz(pckg_sz)).driver_mp v_bif[4]
     );
         this.agent_drvr_mbx = agent_drvr_mbx;
 
@@ -33,6 +33,9 @@ class Driver_controller #(parameter pckg_sz = `PCKG_SZ);
         $display("T=%0t [DRIVER_CONTROLLER] Starting...", $time);
 
         fork
+          	begin
+            	foreach (children[i]) children[i].run();
+          	end
             delegar_instrucciones();
         join_none
     endtask
@@ -64,6 +67,20 @@ class Driver_controller #(parameter pckg_sz = `PCKG_SZ);
         join
 
         $display("T=%0t [DRIVER_CONTROLLER] Reset completed.", $time);
+    endtask
+  
+  // ── Proceso 3: Esperar a que las colas TX de todos los hijos queden vacías
+    task wait_for_tx_empty();
+        $display("T=%0t [DRIVER_CONTROLLER] Waiting for the DUT to consume the packets...", $time);
+      
+        wait (
+            children[0].cola_tx.size() == 0 &&
+            children[1].cola_tx.size() == 0 &&
+            children[2].cola_tx.size() == 0 &&
+            children[3].cola_tx.size() == 0
+        );
+        
+        $display("T=%0t [DRIVER_CONTROLLER] All TX queues are empty.", $time);
     endtask
 
 endclass : Driver_controller
