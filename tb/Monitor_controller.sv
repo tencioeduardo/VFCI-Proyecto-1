@@ -1,24 +1,19 @@
+//============================================
+// Clase Monitor_controller (capa de comando)
+//============================================
+
 `ifndef MONITOR_CONTROLLER_SV
 `define MONITOR_CONTROLLER_SV
 
-// -----------------------------------------------------------------
-// Monitor_controller: instancia los 4 Monitor_son (uno por
-// dispositivo), reenvía todo lo que observan hacia mon2chk_mbx, y
-// agrega el centinela EV_RESET (una sola vez por evento de reset,
-// sin spam) para que el Checker sepa cuándo limpiar sus colas.
-//
-// Comparte los handles v_bif[4] con el Driver_controller: no
-// instancia interfaces propias (decisión 3.E).
-// -----------------------------------------------------------------
 class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
-    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
+  virtual bus_if #(.pckg_sz(pckg_sz)).monitor_mp v_bif [4];
     trans_bus_mbx                       mon_son_mbx [4];
     trans_bus_mbx                       mon2chk_mbx;
     Monitor_son #(pckg_sz)              children [4];
     bit                                 reset_sent;
 
     function new(trans_bus_mbx mon2chk_mbx,
-                 virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4]);
+                 virtual bus_if #(.pckg_sz(pckg_sz)).monitor_mp v_bif [4]);
         this.mon2chk_mbx = mon2chk_mbx;
         this.reset_sent  = 1'b0;
         foreach (v_bif[i]) begin
@@ -29,6 +24,8 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
     endfunction
 
     task run();
+      $display("T=%0t [MONITOR_CONTROLLER] Starting...", $time);
+      
         fork
             begin
                 foreach (children[i]) children[i].run();
@@ -60,9 +57,13 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
     // emite UN solo centinela EV_RESET por flanco de subida, sin
     // repetirlo mientras el reset se mantenga asertado.
     task watchdog_reset();
+        // Solo detecta reset muestreado en posedge clk. Pulsos sub-ciclo no se reportan
+        // (caso físicamente improbable en el testbench actual).
         trans_bus t;
         forever begin
             @(posedge v_bif[0].clk);
+            // Asume reset global compartido por las 4 interfaces (supuesto 5 de NOTAS_INTEGRACION.md).
+            // Si en el futuro cada terminal tuviera reset independiente, este watchdog requiere revisión.
             if (v_bif[0].reset && !reset_sent) begin
                 reset_sent  = 1'b1;
                 t           = new();
