@@ -52,10 +52,12 @@ class Agente;
     task generar_aleatoria();
       	trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
         $display("T=%0t [AGENTE] Random transaction requested.", $time);
-        
 
-        if(!trans.randomize()) $display("T=%0t [AGENTE] Random transaction failed.", $time);
-
+        if(!trans.randomize()) begin
+      	    // ── Aborta la simulacion en caso de fallo en la aleatorizacion.
+      	    $fatal(1, "T=%0t [AGENTE] Random transaction failed (randomization error).", $time);
+        end
+							
         agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
         agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard
     endtask
@@ -64,19 +66,21 @@ class Agente;
     // ── Proceso 2: Se generan transacciones de forma dirigida
     //               (permite delegar algunos campos a la aleatorizacion).
     task generar_dirigida(instruc_gen t);
-      	trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
+      	trans_bus trans = new();
         $display("T=%0t [AGENTE] Specific transaction requested.", $time);
-        
-
-        if (!trans.randomize() with {
+      	
+      	if (!trans.randomize() with {
             t.set_id_origen  -> id_origen  == t.id_origen;
             t.set_id_destino -> id_destino == t.id_destino;
             t.set_payload    -> payload    == t.payload;
             t.set_delay      -> delay      == t.delay;
-        }) $display("T=%0t [AGENTE] Specific transaction failed.", $time);
+        }) begin
+          	// ── Aborta la simulacion en caso de fallo en la aleatorizacion.
+        	$fatal(1, "T=%0t [AGENTE] Specific transaction failed (randomization error).", $time);
+        end
 
-        agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
-        agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard
+        agent_drvr_mbx.put(trans);
+        agent_scorb_mbx.put(trans);
     endtask
 
 
@@ -87,14 +91,17 @@ class Agente;
                 t.cantidad);
 
         repeat(t.cantidad) begin
-            trans_bus trans = new();        // <-- Crea nueva instruccion de tipo trans_bus
+            trans_bus trans = new();
 
             if(!trans.randomize() with {
                 t.set_delay -> delay == t.delay;
-            }) $display("T=%0t [AGENTE] Random transaction failed.", $time);
+            }) begin
+              	// ── Aborta la simulacion en caso de fallo en la aleatorizacion.
+            	$fatal(1, "T=%0t [AGENTE] Random transaction failed (randomization error).", $time);
+            end
 
-            agent_drvr_mbx.put(trans);      // <-- Se envia al Driver_controller
-            agent_scorb_mbx.put(trans);     // <-- Se envia al Scoreboard
+            agent_drvr_mbx.put(trans);
+            agent_scorb_mbx.put(trans);
         end
     endtask
 
