@@ -1,0 +1,44 @@
+//===================================================================
+// Clase instruc_gen para paquetes relacionados con el Agente
+//===================================================================
+
+`ifndef INSTRUC_GEN_SV
+`define INSTRUC_GEN_SV
+
+// ── Definicion de los tipos de transacciones especificadas por el Generador
+typedef enum {trans_aleatoria, trans_dirigida, trans_secuencial} instruc_tipo_e;
+
+class instruc_gen #(parameter pckg_sz = 16);
+
+    instruc_tipo_e tipo;    // <-- Definido por el Generador
+
+    // ----------------------------------------------------------
+    // ── Datos para transacciones dirigidas
+    // ----------------------------------------------------------
+    bit [7 : 0]         id_destino;
+    bit [7 : 0]         id_origen;
+    bit [pckg_sz-9 : 0] payload;
+
+    int unsigned        delay;
+
+
+    // ----------------------------------------------------------
+    // ── Datos para fijar valores o aleatorizarlos
+    // ----------------------------------------------------------
+    bit set_id_destino;
+    bit set_id_origen;
+    bit set_payload;
+    bit set_delay;
+
+
+    // ----------------------------------------------------------
+    // ── Dato para transacciones secuenciales (aleatorias)
+    // ----------------------------------------------------------
+    int unsigned cantidad;
+
+endclass : instruc_gen
+
+// ── Definicion de mailbox con datos de tipo instruc_gen
+typedef mailbox #(instruc_gen) instruc_gen_mbx;
+
+`endif // INSTRUC_GEN_SV
