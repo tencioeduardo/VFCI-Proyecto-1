@@ -1,5 +1,5 @@
 //======================================================================
-// Archivo: bus_includes.sv
+// Archivo: tb/bus_includes.sv
 // Descripción: Lista maestra de compilación para el testbench.
 //======================================================================
 
@@ -34,11 +34,11 @@
 // ── Ambiente de pruebas
 `include "Ambiente.sv"
 
-// ── Ambiente de pruebas
+// ── Pruebas
 `include "test.sv"
 
-// ── Diseño Bajo Prueba (DUT) y Wrapper
-`include "Library.sv"
-`include "design.sv"        // <-- Ajustar segun el nombre del archivo
+// ── Diseño Bajo Prueba (DUT) y Wrapper (ubicados en la carpeta src/)
+`include "../src/Library.sv"
+`include "../src/design.sv"
 
 `endif // BUS_INCLUDES_SV
