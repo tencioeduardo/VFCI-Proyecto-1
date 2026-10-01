@@ -10,7 +10,7 @@
 class Generador;
     instruc_gen_mbx gen_agent_mbx;
     order_test_mbx  tst_gen_mbx;
-    bus_config      cfg;            // puntero al archivo de config
+    bus_config      cfg;            // <-- Puntero al archivo de config
 
     function new(
         instruc_gen_mbx gen_agent_mbx,
@@ -81,7 +81,7 @@ class Generador;
 
         // ── Genera paquetes para los 4 dispositivos
         //    (el payload se delega a la aleatorizacion).
-        for(int i = 0; i < 4; i++) begin
+      	for(int i = 0; i < cfg.drvrs; i++) begin
             instruc_gen instruction = new();
 
             instruction.tipo = trans_dirigida;
@@ -124,8 +124,8 @@ class Generador;
 
         $display("T=%0t [GENERADOR] Generating an invalid scenario on all terminals...", $time);
 
-        // ── Genera paquetes invalidos en los 4 dispositivos.
-        for (int i = 0; i < 4; i++) begin
+        // ── Genera paquetes invalidos en los 4 terminales.
+        for (int i = 0; i < cfg.drvrs; i++) begin
             instruc_gen instruction = new();
 
             instruction.tipo = trans_dirigida;

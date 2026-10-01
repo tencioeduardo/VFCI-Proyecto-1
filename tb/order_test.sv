@@ -15,7 +15,6 @@ typedef enum {
     scen_invalido,
     scen_dispSos,
     scen_autodirec
-
 } orden_tipo_e;
 
 
