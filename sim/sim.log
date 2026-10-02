@@ -1,8 +1,8 @@
 Command: /mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/./simv +ntb_random_seed_automatic +timeout=10000 +drain_cycles=500 +drvrs=4 +wt_destino_valido=70 +wt_destino_invalido=20 +wt_broadcast=10 +min_delay=0 +max_delay=5 +payload_min=0 +payload_max=255 +broadcast_origen=0 +acaparador_origen=1 +autoenvio_origen=2 +acaparador_cantidad=7 +n_soak=15 +soak_delay=2 +csv_out=packets.csv -l sim.log
 Chronologic VCS simulator copyright 1991-2020
 Contains Synopsys proprietary information.
-Compiler version R-2020.12-SP2_Full64; Runtime version R-2020.12-SP2_Full64;  Oct  2 11:24 2026
-NOTE: automatic random seed used: 3585533309
+Compiler version R-2020.12-SP2_Full64; Runtime version R-2020.12-SP2_Full64;  Oct  2 13:47 2026
+NOTE: automatic random seed used: 1231381905
   [CFG] drvrs                  = 4 (from plusarg)
   [CFG] wt_destino_valido      = 70 (from plusarg)
   [CFG] wt_destino_invalido    = 20 (from plusarg)
@@ -164,66 +164,66 @@ T=515000 [GENERADOR] Generating         15 random scenarios...
 T=515000 [GENERADOR] Waiting for an order...
 T=515000 [AGENTE] Sequence of 15 random transactions requested.
 T=515000 [AGENTE] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
 T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 2.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
+T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
+T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
 T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
 T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
 T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
 T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 2.
 T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 1.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 0.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_CONTROLLER] Instruction sent to driver_son 3.
-T=515000 [DRIVER_CONTROLLER] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
-T=515000 [DRIVER_SON 3] Instruction save in TX queue.
-T=515000 [DRIVER_SON 3] Waiting for an instruction...
 T=515000 [DRIVER_SON 0] Instruction save in TX queue.
 T=515000 [DRIVER_SON 0] Waiting for an instruction...
 T=515000 [DRIVER_SON 0] Instruction save in TX queue.
 T=515000 [DRIVER_SON 0] Waiting for an instruction...
 T=515000 [DRIVER_SON 0] Instruction save in TX queue.
 T=515000 [DRIVER_SON 0] Waiting for an instruction...
+T=515000 [DRIVER_SON 0] Instruction save in TX queue.
+T=515000 [DRIVER_SON 0] Waiting for an instruction...
+T=515000 [DRIVER_SON 0] Instruction save in TX queue.
+T=515000 [DRIVER_SON 0] Waiting for an instruction...
+T=515000 [DRIVER_SON 0] Instruction save in TX queue.
+T=515000 [DRIVER_SON 0] Waiting for an instruction...
+T=515000 [DRIVER_SON 3] Instruction save in TX queue.
+T=515000 [DRIVER_SON 3] Waiting for an instruction...
+T=515000 [DRIVER_SON 3] Instruction save in TX queue.
+T=515000 [DRIVER_SON 3] Waiting for an instruction...
+T=515000 [DRIVER_SON 1] Instruction save in TX queue.
+T=515000 [DRIVER_SON 1] Waiting for an instruction...
+T=515000 [DRIVER_SON 1] Instruction save in TX queue.
+T=515000 [DRIVER_SON 1] Waiting for an instruction...
+T=515000 [DRIVER_SON 1] Instruction save in TX queue.
+T=515000 [DRIVER_SON 1] Waiting for an instruction...
+T=515000 [DRIVER_SON 1] Instruction save in TX queue.
+T=515000 [DRIVER_SON 1] Waiting for an instruction...
+T=515000 [DRIVER_SON 1] Instruction save in TX queue.
+T=515000 [DRIVER_SON 1] Waiting for an instruction...
 T=515000 [DRIVER_SON 2] Instruction save in TX queue.
 T=515000 [DRIVER_SON 2] Waiting for an instruction...
-T=515000 [DRIVER_SON 1] Instruction save in TX queue.
-T=515000 [DRIVER_SON 1] Waiting for an instruction...
-T=515000 [DRIVER_SON 1] Instruction save in TX queue.
-T=515000 [DRIVER_SON 1] Waiting for an instruction...
+T=515000 [DRIVER_SON 2] Instruction save in TX queue.
+T=515000 [DRIVER_SON 2] Waiting for an instruction...
 T=615000 [DRIVER_CONTROLLER] Waiting for the DUT to consume the packets...
 T=665000 [DRIVER_SON 0] Packet sent to DUT.
 T=865000 [DRIVER_SON 1] Packet sent to DUT.
@@ -235,35 +235,35 @@ T=1865000 [DRIVER_SON 2] Packet sent to DUT.
 T=2065000 [DRIVER_SON 3] Packet sent to DUT.
 T=2265000 [DRIVER_SON 0] Packet sent to DUT.
 T=2465000 [DRIVER_SON 1] Packet sent to DUT.
-T=2865000 [DRIVER_SON 3] Packet sent to DUT.
+T=2665000 [DRIVER_SON 2] Packet sent to DUT.
 T=3065000 [DRIVER_SON 0] Packet sent to DUT.
 T=3265000 [DRIVER_SON 1] Packet sent to DUT.
-T=3475000 [DRIVER_SON 3] Packet sent to DUT.
 T=3675000 [DRIVER_SON 0] Packet sent to DUT.
 T=3875000 [DRIVER_SON 1] Packet sent to DUT.
-T=4085000 [DRIVER_SON 3] Packet sent to DUT.
-T=4485000 [DRIVER_SON 1] Packet sent to DUT.
-T=4695000 [DRIVER_SON 3] Packet sent to DUT.
-T=4905000 [DRIVER_SON 1] Packet sent to DUT.
-T=5115000 [DRIVER_SON 3] Packet sent to DUT.
-T=5325000 [DRIVER_SON 1] Packet sent to DUT.
-T=5535000 [DRIVER_SON 3] Packet sent to DUT.
-T=5745000 [DRIVER_SON 1] Packet sent to DUT.
-T=5955000 [DRIVER_SON 3] Packet sent to DUT.
-T=6165000 [DRIVER_SON 1] Packet sent to DUT.
-T=6165000 [DRIVER_CONTROLLER] All TX queues are empty.
+T=4105000 [DRIVER_SON 0] Packet sent to DUT.
+T=4305000 [DRIVER_SON 1] Packet sent to DUT.
+T=4535000 [DRIVER_SON 0] Packet sent to DUT.
+T=4735000 [DRIVER_SON 1] Packet sent to DUT.
+T=4965000 [DRIVER_SON 0] Packet sent to DUT.
+T=5165000 [DRIVER_SON 1] Packet sent to DUT.
+T=5595000 [DRIVER_SON 1] Packet sent to DUT.
+T=5845000 [DRIVER_SON 1] Packet sent to DUT.
+T=6095000 [DRIVER_SON 1] Packet sent to DUT.
+T=6345000 [DRIVER_SON 1] Packet sent to DUT.
+T=6595000 [DRIVER_SON 1] Packet sent to DUT.
+T=6595000 [DRIVER_CONTROLLER] All TX queues are empty.
 =====================================================
 [CHECKER] REPORTE FINAL
 -----------------------------------------------------
   Esperados totales     : 32
-  RX totales observados : 28
+  RX totales observados : 23
   TX totales observados : 32
   Resets observados     : 0
   Esperados desc. reset : 0
 -----------------------------------------------------
-  Matches P2P           : 16
-  Matches Autoenvio     : 6
-  Matches Broadcast     : 4
+  Matches P2P           : 17
+  Matches Autoenvio     : 7
+  Matches Broadcast     : 2
   Matches Invalido      : 6
 -----------------------------------------------------
   Mismatches payload    : 0
@@ -272,15 +272,15 @@ T=6165000 [DRIVER_CONTROLLER] All TX queues are empty.
   Unexpected RX         : 0
   Unexpected TX         : 0
 -----------------------------------------------------
-  CSV filas escritas    : 28
+  CSV filas escritas    : 23
   CSV matches ambiguos  : 0
   CSV delays negativos  : 0
 =====================================================
 >>> TEST PASSED <<<
-T=11165000 [TEST] Test completed.
+T=11595000 [TEST] Test completed.
 $finish called from file "../tb/test.sv", line 59.
-$finish at simulation time             11165000
+$finish at simulation time             11595000
            V C S   S i m u l a t i o n   R e p o r t 
-Time: 11165000 ps
-CPU Time:      0.950 seconds;       Data structure size:   0.2Mb
-Fri Oct  2 11:24:05 2026
+Time: 11595000 ps
+CPU Time:      0.990 seconds;       Data structure size:   0.2Mb
+Fri Oct  2 13:47:57 2026
