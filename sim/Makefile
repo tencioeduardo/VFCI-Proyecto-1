@@ -45,7 +45,7 @@ VCS_OPTS = -full64 -sverilog -timescale=1ns/1ps \
            +define+PCKG_SZ=$(PCKG_SZ) \
            -top tb_top \
            ../tb/bus_includes.sv \
-           ../tb/tb_top.sv \
+           ../tb/top_tb.sv \
            -o simv
 
 RUN_OPTS = +ntb_random_seed=$(SEED) \
