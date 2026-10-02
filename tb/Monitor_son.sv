@@ -66,6 +66,7 @@ class Monitor_son #(parameter pckg_sz = `PCKG_SZ);
                     t.id_origen  = '0;
                     t.id_destino = v_bif.D_push[pckg_sz-1 -: 8];
                     t.payload    = v_bif.D_push[pckg_sz-9 : 0];
+                    t.t_event    = $realtime;   // sello del flanco de push
                     cola_rx.push_back(t);
                 end
 
@@ -77,6 +78,7 @@ class Monitor_son #(parameter pckg_sz = `PCKG_SZ);
                     t.id_origen  = monitor_id;
                     t.id_destino = last_D_pop[pckg_sz-1 -: 8];
                     t.payload    = last_D_pop[pckg_sz-9 : 0];
+                    t.t_event    = $realtime;   // sello del flanco de pop
                     mon_son_mbx.put(t);
                 end
             end

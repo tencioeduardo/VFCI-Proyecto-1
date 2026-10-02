@@ -1,12 +1,10 @@
 //============================================
 // Clase Checker (capa funcional)
 //============================================
-
-//============================================
-// Clase Checker (capa funcional)
-//============================================
 // Recibe esperados del Scoreboard (sb2chk_mbx) y eventos del Monitor
 // (mon2chk_mbx). Verifica por contenido TX_POP y RX_PUSH segun el caso.
+// Reporte CSV opcional con +csv_out=<ruta>: una fila por P2P y una por
+// receptor de cada broadcast (src, dst, tx_time_ns, rx_time_ns, delay_ns, kind).
 
 `ifndef CHECKER_SV
 `define CHECKER_SV
@@ -41,14 +39,45 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
     // Esperados descartados por EV_RESET.
     int unsigned n_expected_dropped_reset = 0;
 
+    // ── Contadores del reporte CSV
+    int unsigned n_csv_rows    = 0;
+    int unsigned n_neg_delay   = 0;   // filas con delay < 0 (diagnostico)
+    int unsigned n_ambig_match = 0;   // matches con (dst,payload) duplicado
+
+    // ── Estado del reporte CSV
+    int          fd          = 0;
+    string       csv_path    = "";
+    bit          csv_enabled = 1'b0;
+
     function new(trans_bus_mbx mon2chk_mbx, trans_bus_mbx sb2chk_mbx);
         this.mon2chk_mbx = mon2chk_mbx;
         this.sb2chk_mbx  = sb2chk_mbx;
         this.cfg         = bus_config::get();
+
+        // Lee +csv_out=<ruta>. Ausente: CSV desactivado.
+        begin
+            string p;
+            if ($value$plusargs("csv_out=%s", p)) begin
+                csv_path    = p;
+                csv_enabled = 1'b1;
+            end
+        end
     endfunction
 
     // ── Proceso padre: Inicia el checker
     task run();
+        // Abre el CSV si fue solicitado. fopen fallido: warning, no fatal.
+        if (csv_enabled) begin
+            fd = $fopen(csv_path, "w");
+            if (fd == 0) begin
+                $warning("[CHECKER-CSV] No se pudo abrir '%s'. CSV desactivado.", csv_path);
+                csv_enabled = 1'b0;
+            end else begin
+                $fwrite(fd, "src,dst,tx_time_ns,rx_time_ns,delay_ns,kind\n");
+                $display("[CHECKER-CSV] Reporte CSV -> %s", csv_path);
+            end
+        end
+
         fork
             recibir_scoreboard();
             recibir_monitor();
@@ -74,11 +103,11 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
             mon2chk_mbx.get(t);
             case (t.mon_kind)
                 EV_RX_PUSH: begin
-                    rx_q.push_back(t);
+                    rx_q.push_back(t);   // t_event ya estampado por Monitor_son
                     n_rx_total++;
                 end
                 EV_TX_POP: begin
-                    tx_q.push_back(t);
+                    tx_q.push_back(t);   // t_event ya estampado por Monitor_son
                     n_tx_total++;
                 end
                 EV_RESET: begin
@@ -182,6 +211,26 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return idxs.size();
     endfunction
 
+    // ── Escribe una fila del CSV (firma primitiva, reusable)
+    function void escribir_fila(int src, int dst, real t_tx, real t_rx, string kind);
+        real d;
+        if (fd == 0) return;
+        d = t_rx - t_tx;
+        if (d < 0.0) n_neg_delay++;
+        $fwrite(fd, "%0d,%0d,%0.3f,%0.3f,%0.3f,%s\n",
+                src, dst, t_tx, t_rx, d, kind);
+        n_csv_rows++;
+    endfunction
+
+    // ── Detecta (dst,payload) duplicado en vuelo (correlacion ambigua)
+    function bit hay_rx_ambiguo(bit [7:0] dst, bit [pckg_sz-9:0] payload);
+        int c = 0;
+        foreach (rx_q[k]) begin
+            if (rx_q[k].id_destino == dst && rx_q[k].payload == payload) c++;
+        end
+        return c > 1;
+    endfunction
+
     // ── Logica de matching
     function bit intentar_matchear(trans_bus exp);
         dest_kind_e kind;
@@ -199,6 +248,13 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 if (tx_idx == -1) return 1'b0;
                 rx_idx = buscar_en_rx(exp.id_destino, exp.payload);
                 if (rx_idx == -1) return 1'b0;
+                // CSV: una fila por P2P.
+                if (hay_rx_ambiguo(exp.id_destino, exp.payload)) n_ambig_match++;
+                escribir_fila(tx_q[tx_idx].device_id,
+                              rx_q[rx_idx].device_id,
+                              tx_q[tx_idx].t_event,
+                              rx_q[rx_idx].t_event,
+                              "P2P");
                 tx_q.delete(tx_idx);
                 rx_q.delete(rx_idx);
                 n_matches_p2p++;
@@ -220,6 +276,15 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
 
                 // N = cfg.drvrs - 1 (sin broadcast-to-self).
                 if (contar_rx_broadcast(exp.payload, exp.id_origen, rx_idxs) < (cfg.drvrs - 1)) return 1'b0;
+
+                // CSV: N filas, una por receptor (mismo tx_event).
+                foreach (rx_idxs[m]) begin
+                    escribir_fila(tx_q[tx_idx].device_id,
+                                  rx_q[rx_idxs[m]].device_id,
+                                  tx_q[tx_idx].t_event,
+                                  rx_q[rx_idxs[m]].t_event,
+                                  "BROADCAST");
+                end
 
                 tx_q.delete(tx_idx);
                 rx_idxs.sort();
@@ -247,6 +312,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         int          idxs[$];
         int          n_recv;
         int unsigned total_contabilizado;
+        real         t_tx_cached;
         // Estado por esperado: 0=sin TX exacto, 1=TX sin RX, 2=contabilizado
         int          estado [$];
         dest_kind_e  kind;
@@ -260,6 +326,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                                   expected_q[i].id_destino,
                                   expected_q[i].payload);
             if (tx_idx == -1) continue;
+            t_tx_cached = tx_q[tx_idx].t_event;   // cachear antes del delete
             tx_q.delete(tx_idx);
 
             case (kind)
@@ -278,6 +345,12 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                     if (rx_idx == -1) begin
                         estado[i] = 1;
                     end else begin
+                        // CSV: match P2P rezagado.
+                        escribir_fila(expected_q[i].id_origen,
+                                      rx_q[rx_idx].device_id,
+                                      t_tx_cached,
+                                      rx_q[rx_idx].t_event,
+                                      "P2P");
                         rx_q.delete(rx_idx);
                         n_matches_p2p++;
                         estado[i] = 2;
@@ -287,6 +360,14 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 BROADCAST: begin
                     n_recv = contar_rx_broadcast(expected_q[i].payload,
                                                  expected_q[i].id_origen, idxs);
+                    // CSV: emite lo entregado, incluso si fue parcial.
+                    foreach (idxs[m]) begin
+                        escribir_fila(expected_q[i].id_origen,
+                                      rx_q[idxs[m]].device_id,
+                                      t_tx_cached,
+                                      rx_q[idxs[m]].t_event,
+                                      "BROADCAST");
+                    end
                     idxs.sort();
                     for (int m = idxs.size() - 1; m >= 0; m--) rx_q.delete(idxs[m]);
                     estado[i] = 2;
@@ -366,6 +447,10 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         $display("  Missing RX            : %0d", n_missing_rx);
         $display("  Unexpected RX         : %0d", n_unexpected_rx);
         $display("  Unexpected TX         : %0d", n_unexpected_tx);
+        $display("-----------------------------------------------------");
+        $display("  CSV filas escritas    : %0d", n_csv_rows);
+        $display("  CSV matches ambiguos  : %0d", n_ambig_match);
+        $display("  CSV delays negativos  : %0d", n_neg_delay);
         $display("=====================================================");
 
         total_contabilizado = n_matches_p2p + n_matches_broadcast +
@@ -385,6 +470,18 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
             $display(">>> TEST PASSED <<<");
         end else begin
             $display(">>> TEST FAILED <<<");
+        end
+
+        // CSV: avisos y cierre. Idempotente.
+        if (csv_enabled) begin
+            if (n_neg_delay   > 0)
+                $warning("[CHECKER-CSV] %0d filas con delay negativo.", n_neg_delay);
+            if (n_ambig_match > 0)
+                $warning("[CHECKER-CSV] %0d matches ambiguos (dst,payload) — ver limitacion documentada.", n_ambig_match);
+        end
+        if (fd != 0) begin
+            $fclose(fd);
+            fd = 0;
         end
     endfunction
 

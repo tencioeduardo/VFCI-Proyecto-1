@@ -42,6 +42,10 @@ class trans_bus #(parameter pckg_sz = `PCKG_SZ);
     mon_event_e  mon_kind  = EV_NONE;
     int unsigned device_id = 0;
 
+    // ── Sello temporal del evento observado (ns, 1 ps). Lo estampa
+    //    Monitor_son al crear EV_RX_PUSH / EV_TX_POP. 0 si no observado.
+    real         t_event   = 0.0;
+
 
     function new();
         cfg = bus_config::get();
