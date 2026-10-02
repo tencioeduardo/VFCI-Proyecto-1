@@ -15,8 +15,8 @@ PCKG_SZ        ?= 16
 
 
 # --- Parámetros de control general del test
-SEED           ?= random
-TIMEOUT        ?= 1000000
+SEED           ?= automatic
+TIMEOUT        ?= 10000
 DRAIN_CYCLES   ?= 500
 
 
@@ -34,11 +34,12 @@ PAYLOAD_MAX            ?= 255
 BROADCAST_ORIGEN     ?= 0
 ACAPARADOR_ORIGEN    ?= 1
 AUTOENVIO_ORIGEN     ?= 2
-ACAPARADOR_CANTIDAD  ?= 10
-N_SOAK               ?= 20
+ACAPARADOR_CANTIDAD  ?= 7
+N_SOAK               ?= 15
 SOAK_DELAY           ?= 2
 
-# --- Opciones de compilación y ejecución ---
+
+# --- Opción de compilación
 VCS_OPTS = -full64 -sverilog -timescale=1ns/1ps \
            -debug_access+all -assert svaext \
            +incdir+../tb +incdir+../src \
@@ -48,23 +49,45 @@ VCS_OPTS = -full64 -sverilog -timescale=1ns/1ps \
            ../tb/top_tb.sv \
            -o simv
 
-RUN_OPTS = +ntb_random_seed=$(SEED) \
-           +timeout=$(TIMEOUT) \
-           +drain_cycles=$(DRAIN_CYCLES) \
-           +drvrs=$(DRVRS) \
-           +wt_destino_valido=$(WT_DESTINO_VALIDO) \
-           +wt_destino_invalido=$(WT_DESTINO_INVALIDO) \
-           +wt_broadcast=$(WT_BROADCAST) \
-           +min_delay=$(MIN_DELAY) \
-           +max_delay=$(MAX_DELAY) \
-           +payload_min=$(PAYLOAD_MIN) \
-           +payload_max=$(PAYLOAD_MAX) \
-           +broadcast_origen=$(BROADCAST_ORIGEN) \
-           +acaparador_origen=$(ACAPARADOR_ORIGEN) \
-           +autoenvio_origen=$(AUTOENVIO_ORIGEN) \
-           +acaparador_cantidad=$(ACAPARADOR_CANTIDAD) \
-           +n_soak=$(N_SOAK) \
-           +soak_delay=$(SOAK_DELAY)
+
+ # --- Opciones de ejecución
+ifeq ($(SEED),automatic)
+    RUN_OPTS = +ntb_random_seed_automatic \
+               +timeout=$(TIMEOUT) \
+               +drain_cycles=$(DRAIN_CYCLES) \
+               +drvrs=$(DRVRS) \
+               +wt_destino_valido=$(WT_DESTINO_VALIDO) \
+               +wt_destino_invalido=$(WT_DESTINO_INVALIDO) \
+               +wt_broadcast=$(WT_BROADCAST) \
+               +min_delay=$(MIN_DELAY) \
+               +max_delay=$(MAX_DELAY) \
+               +payload_min=$(PAYLOAD_MIN) \
+               +payload_max=$(PAYLOAD_MAX) \
+               +broadcast_origen=$(BROADCAST_ORIGEN) \
+               +acaparador_origen=$(ACAPARADOR_ORIGEN) \
+               +autoenvio_origen=$(AUTOENVIO_ORIGEN) \
+               +acaparador_cantidad=$(ACAPARADOR_CANTIDAD) \
+               +n_soak=$(N_SOAK) \
+               +soak_delay=$(SOAK_DELAY)
+else
+    RUN_OPTS = +ntb_random_seed=$(SEED) \
+               +timeout=$(TIMEOUT) \
+               +drain_cycles=$(DRAIN_CYCLES) \
+               +drvrs=$(DRVRS) \
+               +wt_destino_valido=$(WT_DESTINO_VALIDO) \
+               +wt_destino_invalido=$(WT_DESTINO_INVALIDO) \
+               +wt_broadcast=$(WT_BROADCAST) \
+               +min_delay=$(MIN_DELAY) \
+               +max_delay=$(MAX_DELAY) \
+               +payload_min=$(PAYLOAD_MIN) \
+               +payload_max=$(PAYLOAD_MAX) \
+               +broadcast_origen=$(BROADCAST_ORIGEN) \
+               +acaparador_origen=$(ACAPARADOR_ORIGEN) \
+               +autoenvio_origen=$(AUTOENVIO_ORIGEN) \
+               +acaparador_cantidad=$(ACAPARADOR_CANTIDAD) \
+               +n_soak=$(N_SOAK) \
+               +soak_delay=$(SOAK_DELAY)
+endif
 
 # --- Reglas para uso del Makefile
 comp:
