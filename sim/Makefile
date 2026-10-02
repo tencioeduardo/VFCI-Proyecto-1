@@ -5,10 +5,7 @@
 #   make run                Ejecuta la simulación con valores por defecto
 #   make run_csv            Ejecuta la simulación generando el CSV
 #   make plot               Genera el histograma como PNG
-#   make plot_dumb          Muestra el histograma en ASCII en la consola
 #   make replot             Re-plot del PNG (cambiar BIN_WIDTH)
-#   make replot_dumb        Re-plot en ASCII (cambiar BIN_WIDTH)
-#   make run_dumb           run_csv + plot_dumb (flujo rápido por SSH)
 #   make all                run_csv + plot
 #   make clean              Elimina archivos temporales de compilación
 #=======================================================================
@@ -127,26 +124,10 @@ plot:
 	@echo "[MAKE] Histograma: $(CSV_PNG)"
 
 
-# --- Muestra el histograma en ASCII (sin generar PNG)
-plot_dumb:
-	gnuplot -e "csv_file='$(CSV_OUT)'; bin_width=$(BIN_WIDTH)" \
-	        scripts/histogram_dumb.gp
-
-
 # --- Re-plot sin re-simular (cambiar BIN_WIDTH: make replot BIN_WIDTH=5)
 replot:
 	gnuplot -e "csv_file='$(CSV_OUT)'; png_file='$(CSV_PNG)'; bin_width=$(BIN_WIDTH)" \
 	        scripts/histogram.gp
-
-
-# --- Re-plot ASCII sin re-simular
-replot_dumb:
-	gnuplot -e "csv_file='$(CSV_OUT)'; bin_width=$(BIN_WIDTH)" \
-	        scripts/histogram_dumb.gp
-
-
-# --- Flujo rápido por SSH: simula y muestra en ASCII
-run_dumb: run_csv plot_dumb
 
 
 # --- Flujo completo (PNG)
@@ -156,4 +137,4 @@ all: run_csv plot
 clean:
 	rm -rf simv* csrc *.log *.vpd *.vdb urgReport DVEfiles ucli.key .vcs* *.csv *.png
 
-.PHONY: comp run run_csv plot plot_dumb replot replot_dumb run_dumb all clean
+.PHONY: comp run run_csv plot replot  all clean
