@@ -80,7 +80,7 @@ simv
 ../tb/top_tb.sv
 49
 which_declare=declare -f
-XDG_SESSION_ID=116
+XDG_SESSION_ID=121
 XDG_RUNTIME_DIR=/run/user/1504
 XDG_DATA_DIRS=/home/ELIZONDO_ESPINOZA_JUAN_VeriII26/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
 VMR_MODE_FLAG=64
@@ -98,9 +98,9 @@ UVM_HOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/uvm-1.2
 UNAME=/bin/uname
 TOOL_HOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64
 SYNOPSYS_HOME=/mnt/vol_NFS_rh003/tools
-SSH_TTY=/dev/pts/7
-SSH_CONNECTION=172.21.255.79 35338 172.21.8.7 22
-SSH_CLIENT=172.21.255.79 35338 22
+SSH_TTY=/dev/pts/6
+SSH_CONNECTION=172.21.7.108 51192 172.21.8.7 22
+SSH_CLIENT=172.21.7.108 51192 22
 SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
 SNPS_SIM_DEFAULT_GUI=verdi
 SNPSLMD_QUEUE=TRUE
@@ -113,8 +113,8 @@ MODULESHOME=/usr/share/Modules
 MODULEPATH_modshare=/usr/share/Modules/modulefiles:2:/etc/modulefiles:2:/usr/share/modulefiles:2
 MODULEPATH=/etc/scl/modulefiles:/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles
 MFLAGS=
-MAKE_TERMOUT=/dev/pts/7
-MAKE_TERMERR=/dev/pts/7
+MAKE_TERMOUT=/dev/pts/6
+MAKE_TERMERR=/dev/pts/6
 MAKELEVEL=1
 MAKEFLAGS=
 LOADEDMODULES=
@@ -137,15 +137,15 @@ BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBU
 1790904203 ../tb/Ambiente.sv
 1790904203 ../tb/Generador.sv
 1790904203 ../tb/Agente.sv
-1790960243 ../tb/Checker.sv
+1790972267 ../tb/Checker.sv
 1790904203 ../tb/scoreboard.sv
 1790954018 ../tb/Monitor_controller.sv
 1790904203 ../tb/Driver_controller.sv
-1790960243 ../tb/Monitor_son.sv
-1790904203 ../tb/Driver_son.sv
+1790972267 ../tb/Monitor_son.sv
+1790978482 ../tb/Driver_son.sv
 1790904203 ../tb/order_test.sv
 1790904203 ../tb/instruc_gen.sv
-1790961565 ../tb/trans_bus.sv
+1790972267 ../tb/trans_bus.sv
 1790904203 ../tb/bus_if.sv
 1790904203 ../tb/bus_config.sv
 1631316465 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/sva/rec_ltl_classes_package.svp
@@ -158,5 +158,5 @@ BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBU
 1631316244 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/liberrorinf.so
 1631316235 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libsnpsmalloc.so
 1631316245 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libvfs.so
-1790961660 simv.daidir
+1790981658 simv.daidir
 -1 partitionlib
