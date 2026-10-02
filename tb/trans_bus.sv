@@ -49,7 +49,7 @@ class trans_bus #(parameter pckg_sz = `PCKG_SZ);
 
     function new();
         cfg = bus_config::get();
-    endfunction
+    endfunction 
 
 
     // ----------------------------------------------------------
