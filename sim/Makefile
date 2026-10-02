@@ -20,7 +20,7 @@ PCKG_SZ        ?= 16
 
 # --- Parámetros de control general del test
 SEED           ?= automatic
-TIMEOUT        ?= 100000
+TIMEOUT        ?= 1000000
 DRAIN_CYCLES   ?= 500
 
 
@@ -39,7 +39,7 @@ BROADCAST_ORIGEN     ?= 0
 ACAPARADOR_ORIGEN    ?= 1
 AUTOENVIO_ORIGEN     ?= 2
 ACAPARADOR_CANTIDAD  ?= 7
-N_SOAK               ?= 1000
+N_SOAK               ?= 5000
 SOAK_DELAY           ?= 2
 
 
