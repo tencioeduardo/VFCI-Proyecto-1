@@ -1,0 +1,9 @@
+#!/bin/sh -h 
+PYTHONHOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/search/pyh
+export PYTHONHOME
+PYTHONPATH=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/pylib27
+export PYTHONPATH
+LD_LIBRARY_PATH=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib:/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/pylib27
+export LD_LIBRARY_PATH
+/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/bin/vcsfind_create_index.exe  -z  "/mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/simv.daidir/debug_dump/fsearch/./idents_rAYbO4.xml.gz" -o "/mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/simv.daidir/debug_dump/fsearch/fsearch.db_tmp"
+\mv "/mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/simv.daidir/debug_dump/fsearch/fsearch.db_tmp" "/mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/simv.daidir/debug_dump/fsearch/fsearch.db"

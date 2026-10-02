@@ -1,0 +1,162 @@
+35       
+0 bus_config.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/bus_config.sv
+0 bus_if.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/bus_if.sv
+0 trans_bus.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/trans_bus.sv
+0 instruc_gen.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/instruc_gen.sv
+0 order_test.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/order_test.sv
+0 Driver_son.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Driver_son.sv
+0 Monitor_son.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Monitor_son.sv
+0 Driver_controller.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Driver_controller.sv
+0 Monitor_controller.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Monitor_controller.sv
+0 scoreboard.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/scoreboard.sv
+0 Checker.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Checker.sv
+0 Agente.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Agente.sv
+0 Generador.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Generador.sv
+0 Ambiente.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/Ambiente.sv
+0 test.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/test.sv
+0 fifo.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/fifo.sv
+0 ../tb/fifo.sv
+0 bus_includes.sv
+0 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/systemverilog/bus_includes.sv
+43
++define+PCKG_SZ=16
++incdir+../src
++incdir+../tb
++itf+/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/vcsdp_lite.tab
++vcsd1
++vpi
+-Mamsrun=
+-Masflags=
+-Mcc=gcc
+-Mcfl= -pipe -fPIC -O -I/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/include
+-Mcplusplus=g++
+-Mcrt0=
+-Mcrtn=
+-Mcsrc=
+-Mexternalobj=
+-Mldflags= -rdynamic
+-Mobjects= /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libvirsim.so /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/liberrorinf.so /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libsnpsmalloc.so /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libvfs.so
+-Mout=simv
+-Msaverestoreobj=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/vcs_save_restore_new.o
+-Msyslibs=/mnt/vol_NFS_rh003/tools/verdi/R-2020.12-SP2/share/PLI/VCS/LINUX64/pli.a -ldl
+-Mvcsaceobjs=
+-Mxcflags= -pipe -fPIC -I/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/include
+-Mxllcflags=
+-P
+-assert
+-debug_access+all
+-fsdb
+-full64
+-gen_obj
+-l
+-o simv
+-picarchive
+-sverilog
+-timescale=1ns/1ps
+-top
+/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/bin/vcs1
+comp.log
+svaext
+tb_top
+simv
+/mnt/vol_NFS_rh003/tools/verdi/R-2020.12-SP2/share/PLI/VCS/LINUX64/verdi.tab
+../tb/bus_includes.sv
+../tb/top_tb.sv
+49
+which_declare=declare -f
+XDG_SESSION_ID=116
+XDG_RUNTIME_DIR=/run/user/1504
+XDG_DATA_DIRS=/home/ELIZONDO_ESPINOZA_JUAN_VeriII26/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop
+VMR_MODE_FLAG=64
+VERDI_HOME=/mnt/vol_NFS_rh003/tools/verdi/R-2020.12-SP2
+VCS_PATHMAP_PRELOAD_DONE=1
+VCS_MX_HOME_INTERNAL=1
+VCS_MODE_FLAG=64
+VCS_LOG_FILE=comp.log
+VCS_HOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2
+VCS_EXEC_DONE=1
+VCS_DEPTH=0
+VCS_ARG_ADDED_FOR_TMP=1
+VCS_ARCH=linux64
+UVM_HOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/uvm-1.2
+UNAME=/bin/uname
+TOOL_HOME=/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64
+SYNOPSYS_HOME=/mnt/vol_NFS_rh003/tools
+SSH_TTY=/dev/pts/7
+SSH_CONNECTION=172.21.255.79 35338 172.21.8.7 22
+SSH_CLIENT=172.21.255.79 35338 22
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+SNPS_SIM_DEFAULT_GUI=verdi
+SNPSLMD_QUEUE=TRUE
+SCRNAME=vcs
+SCRIPT_NAME=vcs
+OVA_UUM=0
+MODULES_RUN_QUARANTINE=LD_LIBRARY_PATH LD_PRELOAD
+MODULES_CMD=/usr/share/Modules/libexec/modulecmd.tcl
+MODULESHOME=/usr/share/Modules
+MODULEPATH_modshare=/usr/share/Modules/modulefiles:2:/etc/modulefiles:2:/usr/share/modulefiles:2
+MODULEPATH=/etc/scl/modulefiles:/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles
+MFLAGS=
+MAKE_TERMOUT=/dev/pts/7
+MAKE_TERMERR=/dev/pts/7
+MAKELEVEL=1
+MAKEFLAGS=
+LOADEDMODULES=
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+LC_ALL=C
+HISTCONTROL=ignoredups
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1504/bus
+BASH_FUNC_which%%=() {  ( alias;_ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@_}
+BASH_FUNC_switchml%%=() {  typeset swfound=1;_ if [ "${MODULES_USE_COMPAT_VERSION:-0}" = '1' ]; then_ typeset swname='main';_ if [ -e /usr/share/Modules/libexec/modulecmd.tcl ]; then_ typeset swfound=0;_ unset MODULES_USE_COMPAT_VERSION;_ fi;_ else_ typeset swname='compatibility';_ if [ -e /usr/share/Modules/libexec/modulecmd-compat ]; then_ typeset swfound=0;_ MODULES_USE_COMPAT_VERSION=1;_ export MODULES_USE_COMPAT_VERSION;_ fi;_ fi;_ if [ $swfound -eq 0 ]; then_ echo "Switching to Modules $swname version";_ source /usr/share/Modules/init/bash;_ else_ echo "Cannot switch to Modules $swname version, command not found";_ return 1;_ fi_}
+BASH_FUNC_scl%%=() {  if [ "$1" = "load" -o "$1" = "unload" ]; then_ eval "module $@";_ else_ /usr/bin/scl "$@";_ fi_}
+BASH_FUNC_module%%=() {  _module_raw "$@" 2>&1_}
+BASH_FUNC_ml%%=() {  module ml "$@"_}
+BASH_FUNC__module_raw%%=() {  unset _mlshdbg;_ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}" = '1' ]; then_ case "$-" in _ *v*x*)_ set +vx;_ _mlshdbg='vx'_ ;;_ *v*)_ set +v;_ _mlshdbg='v'_ ;;_ *x*)_ set +x;_ _mlshdbg='x'_ ;;_ *)_ _mlshdbg=''_ ;;_ esac;_ fi;_ unset _mlre _mlIFS;_ if [ -n "${IFS+x}" ]; then_ _mlIFS=$IFS;_ fi;_ IFS=' ';_ for _mlv in ${MODULES_RUN_QUARANTINE:-};_ do_ if [ "${_mlv}" = "${_mlv##*[!A-Za-z0-9_]}" -a "${_mlv}" = "${_mlv#[0-9]}" ]; then_ if [ -n "`eval 'echo ${'$_mlv'+x}'`" ]; then_ _mlre="${_mlre:-}${_mlv}_modquar='`eval 'echo ${'$_mlv'}'`' ";_ fi;_ _mlrv="MODULES_RUNENV_${_mlv}";_ _mlre="${_mlre:-}${_mlv}='`eval 'echo ${'$_mlrv':-}'`' ";_ fi;_ done;_ if [ -n "${_mlre:-}" ]; then_ eval `eval ${_mlre} /usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash '"$@"'`;_ else_ eval `/usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash "$@"`;_ fi;_ _mlstatus=$?;_ if [ -n "${_mlIFS+x}" ]; then_ IFS=$_mlIFS;_ else_ unset IFS;_ fi;_ unset _mlre _mlv _mlrv _mlIFS;_ if [ -n "${_mlshdbg:-}" ]; then_ set -$_mlshdbg;_ fi;_ unset _mlshdbg;_ return $_mlstatus_}
+0
+23
+1790904203 ../src/design.sv
+1790904203 ../src/fifo.sv
+1790904203 ../src/Library.sv
+1790904203 ../tb/test.sv
+1790904203 ../tb/Ambiente.sv
+1790904203 ../tb/Generador.sv
+1790904203 ../tb/Agente.sv
+1790960243 ../tb/Checker.sv
+1790904203 ../tb/scoreboard.sv
+1790954018 ../tb/Monitor_controller.sv
+1790904203 ../tb/Driver_controller.sv
+1790960243 ../tb/Monitor_son.sv
+1790904203 ../tb/Driver_son.sv
+1790904203 ../tb/order_test.sv
+1790904203 ../tb/instruc_gen.sv
+1790961565 ../tb/trans_bus.sv
+1790904203 ../tb/bus_if.sv
+1790904203 ../tb/bus_config.sv
+1631316465 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/sva/rec_ltl_classes_package.svp
+1790904203 ../tb/top_tb.sv
+1790904203 ../tb/bus_includes.sv
+1631317894 /mnt/vol_NFS_rh003/tools/verdi/R-2020.12-SP2/share/PLI/VCS/LINUX64/verdi.tab
+1631316234 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/vcsdp_lite.tab
+4
+1631316244 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libvirsim.so
+1631316244 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/liberrorinf.so
+1631316235 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libsnpsmalloc.so
+1631316245 /mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/linux64/lib/libvfs.so
+1790961660 simv.daidir
+-1 partitionlib

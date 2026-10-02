@@ -1,0 +1,16 @@
+Command: vcs -full64 -sverilog -timescale=1ns/1ps -debug_access+all -assert svaext \
++incdir+../tb +incdir+../src +define+PCKG_SZ=16 -top tb_top ../tb/bus_includes.sv \
+../tb/top_tb.sv -o simv -l comp.log
+                         Chronologic VCS (TM)
+       Version R-2020.12-SP2_Full64 -- Fri Oct  2 11:24:04 2026
+
+                    Copyright (c) 1991 - 2021 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+            or distribution of this software is strictly prohibited.
+
+The design hasn't changed and need not be recompiled. 
+If you really want to, delete file /mnt/vol_NFS_rh003/Est_Veri_II2026/ELIZONDO_ESPINOZA_JUAN_VeriII26/VFCI-Proyecto-1/sim/simv.daidir/.vcs.timestamp and
+run VCS again.
+
