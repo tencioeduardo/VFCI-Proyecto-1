@@ -7,7 +7,9 @@
 
 ## Descripción del Proyecto
 
-Este repositorio contiene la implementación y documentación del **Primer Proyecto** para el curso **Verificación Funcional de Circuitos Integrados (EL5811)**. 
+Este repositorio contiene el desarrollo del **Primer Proyecto** para el curso **Verificación Funcional de Circuitos Integrados (EL5811)**. El proyecto comprende el diseño e implementación de un ambiente de verificación con un esquema de aleatorización controlada en capas. El mismo se detalla en el siguiente diagrama.
+
+![Mi logo](doc/Diagrama_AVF_2.png)
 
 
 
