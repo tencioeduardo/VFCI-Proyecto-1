@@ -2,34 +2,15 @@
 // Clase Checker (capa funcional)
 //============================================
 
+//============================================
+// Clase Checker (capa funcional)
+//============================================
+// Recibe esperados del Scoreboard (sb2chk_mbx) y eventos del Monitor
+// (mon2chk_mbx). Verifica por contenido TX_POP y RX_PUSH segun el caso.
+
 `ifndef CHECKER_SV
 `define CHECKER_SV
 
-// -----------------------------------------------------------------
-// Checker: recibe transacciones "esperadas" del Scoreboard
-// (sb2chk_mbx) y eventos observados del Monitor (mon2chk_mbx,
-// EV_RX_PUSH / EV_TX_POP / EV_RESET), y verifica por contenido
-// (no por posición ni por orden) que cada esperado tenga su TX_POP
-// y, según el caso, su(s) RX_PUSH correspondiente(s).
-//
-// No compara id_origen en el lado RX: el paquete no viaja con el
-// ID de origen, así que el Monitor tampoco lo conoce del lado
-// receptor (ver Monitor_son: id_origen='0 para EV_RX_PUSH).
-//
-// Capacidades reales del DUT (confirmadas por el profesor; difieren
-// de lo supuesto originalmente en el diseño):
-//   - Autoenvío (id_origen == id_destino): el DUT hace pop del TX
-//     pero NO entrega el paquete a ningún RX. Se exige solo el
-//     TX_POP (clase SELF_SEND); cualquier RX asociado es inesperado.
-//   - Broadcast: se entrega a los cfg.drvrs-1 dispositivos distintos
-//     del origen. No existe broadcast-to-self.
-//
-// Diagnóstico de payload corrupto: solo se hace en wrap_up(), en dos
-// fases (primero todos los matches exactos, luego el diagnóstico de
-// lo sobrante). Hacerlo en caliente permitía que un esperado sin TX
-// exacto "robara" por ruta el TX de otro esperado todavía pendiente
-// de su RX (dos paquetes en vuelo con la misma ruta org->dst).
-// -----------------------------------------------------------------
 class Checker #(parameter pckg_sz = `PCKG_SZ);
 
     typedef enum {VALID_P2P, SELF_SEND, BROADCAST, INVALID} dest_kind_e;
@@ -57,8 +38,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
     int unsigned n_unexpected_rx          = 0;
     int unsigned n_unexpected_tx          = 0;
     int unsigned n_resets                 = 0;
-    // Esperados descartados por un EV_RESET (no son fallo; cierran la
-    // identidad contable de wrap_up).
+    // Esperados descartados por EV_RESET.
     int unsigned n_expected_dropped_reset = 0;
 
     function new(trans_bus_mbx mon2chk_mbx, trans_bus_mbx sb2chk_mbx);
@@ -67,6 +47,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         this.cfg         = bus_config::get();
     endfunction
 
+    // ── Proceso padre: Inicia el checker
     task run();
         fork
             recibir_scoreboard();
@@ -75,6 +56,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         join_none
     endtask
 
+    // ── Proceso 1: Recibe esperados del Scoreboard
     task recibir_scoreboard();
         trans_bus t;
         forever begin
@@ -85,6 +67,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         end
     endtask
 
+    // ── Proceso 2: Recibe eventos del Monitor
     task recibir_monitor();
         trans_bus t;
         forever begin
@@ -114,9 +97,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         end
     endtask
 
-    // Si ev_activity se dispara mientras procesar_colas() corre, la
-    // notificación se pierde. No es bug: procesar_colas() recorre toda
-    // expected_q contra las colas actuales, y wrap_up() cierra al final.
+    // ── Proceso 3: Dispara el matching
     task matcher();
         forever begin
             @(ev_activity);
@@ -135,8 +116,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         end
     endtask
 
-    // Usa id_origen e id_destino: el autoenvío se distingue del P2P
-    // normal solo por origen == destino (ambos válidos).
+    // ── Clasifica el destino del esperado
     function dest_kind_e clasificar(trans_bus t);
         if (t.id_destino == cfg.id_broadcast)      clasificar = BROADCAST;
         else if (t.id_destino < cfg.drvrs) begin
@@ -146,9 +126,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         else                                        clasificar = INVALID;
     endfunction
 
-    // -------- Helpers de búsqueda (por contenido, no por índice) ----
-
-    // Búsqueda exacta en tx_q: origen + destino + payload.
+    // ── Busqueda exacta en tx_q
     function int buscar_en_tx(bit [7:0] id_origen, bit [7:0] id_destino,
                                bit [pckg_sz-9:0] payload);
         for (int k = 0; k < tx_q.size(); k++) begin
@@ -159,9 +137,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return -1;
     endfunction
 
-    // Búsqueda "por ruta" en tx_q (solo origen+destino, sin exigir
-    // payload). Se usa como diagnóstico de payload corrupto, solo en
-    // wrap_up() y solo después de agotar los matches exactos.
+    // ── Busqueda por ruta en tx_q (diagnostico)
     function int buscar_en_tx_por_ruta(bit [7:0] id_origen, bit [7:0] id_destino);
         for (int k = 0; k < tx_q.size(); k++) begin
             if (tx_q[k].id_origen == id_origen && tx_q[k].id_destino == id_destino)
@@ -170,8 +146,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return -1;
     endfunction
 
-    // Búsqueda exacta en rx_q: destino + payload (NO compara
-    // id_origen, el paquete no lo trae).
+    // ── Busqueda exacta en rx_q
     function int buscar_en_rx(bit [7:0] id_destino, bit [pckg_sz-9:0] payload);
         for (int k = 0; k < rx_q.size(); k++) begin
             if (rx_q[k].id_destino == id_destino && rx_q[k].payload == payload)
@@ -180,8 +155,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return -1;
     endfunction
 
-    // Búsqueda "por destino" en rx_q, ignorando payload: diagnóstico
-    // de payload corrupto en la recepción (solo en wrap_up()).
+    // ── Busqueda por destino en rx_q (diagnostico)
     function int buscar_en_rx_por_destino(bit [7:0] id_destino);
         for (int k = 0; k < rx_q.size(); k++) begin
             if (rx_q[k].id_destino == id_destino) return k;
@@ -189,16 +163,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return -1;
     endfunction
 
-    // Cuenta RX de broadcast por (device_id, payload), sin timestamp.
-    // Supuesto: no hay dos broadcasts simultáneos con el mismo payload en vuelo
-    // (ver supuesto 2 de NOTAS_INTEGRACION.md — correlación por contenido).
-    // Excluye el device_id del origen: el DUT no entrega broadcast al
-    // emisor, así que un RX en ese dispositivo NO cuenta como válido
-    // y queda en rx_q para reportarse como inesperado en wrap_up.
-    //
-    // Cuenta cuántos RX_PUSH de broadcast con el payload dado
-    // existen en rx_q, contando cada device_id una sola vez.
-    // Devuelve también sus índices en idxs (ascendente).
+    // ── Cuenta RX de broadcast por payload y device_id
     function int contar_rx_broadcast(bit [pckg_sz-9:0] payload, bit [7:0] id_origen,
                                      ref int idxs[$]);
         idxs.delete();
@@ -217,8 +182,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         return idxs.size();
     endfunction
 
-    // -------- Lógica de matching -------------------------------------
-
+    // ── Logica de matching
     function bit intentar_matchear(trans_bus exp);
         dest_kind_e kind;
         int         tx_idx;
@@ -230,9 +194,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         case (kind)
 
             VALID_P2P: begin
-                // Solo matching exacto (TX y RX por contenido). Si falta
-                // alguno, el esperado queda pendiente: el diagnóstico de
-                // payload corrupto (TX o RX) lo hace wrap_up().
+                // Match exacto TX y RX.
                 tx_idx = buscar_en_tx(exp.id_origen, exp.id_destino, exp.payload);
                 if (tx_idx == -1) return 1'b0;
                 rx_idx = buscar_en_rx(exp.id_destino, exp.payload);
@@ -244,9 +206,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
             end
 
             SELF_SEND: begin
-                // El DUT hace pop del TX pero descarta el paquete: solo
-                // se exige el TX_POP. Si apareciera un RX, no se consume
-                // aquí y wrap_up lo contará como n_unexpected_rx.
+                // Solo se exige TX_POP.
                 tx_idx = buscar_en_tx(exp.id_origen, exp.id_destino, exp.payload);
                 if (tx_idx == -1) return 1'b0;
                 tx_q.delete(tx_idx);
@@ -258,8 +218,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 tx_idx = buscar_en_tx(exp.id_origen, exp.id_destino, exp.payload);
                 if (tx_idx == -1) return 1'b0;
 
-                // El DUT no hace broadcast-to-self: N = cfg.drvrs - 1
-                // (todos los dispositivos menos el origen).
+                // N = cfg.drvrs - 1 (sin broadcast-to-self).
                 if (contar_rx_broadcast(exp.payload, exp.id_origen, rx_idxs) < (cfg.drvrs - 1)) return 1'b0;
 
                 tx_q.delete(tx_idx);
@@ -274,10 +233,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 if (tx_idx == -1) return 1'b0;
                 tx_q.delete(tx_idx);
                 n_matches_invalid++;
-                // Ausencia de RX se valida en wrap_up (evita falsos
-                // positivos por carreras mientras el test aún corre).
-                // Un RX espurio se contará como n_unexpected_rx en el
-                // reporte final.
+                // Solo se exige TX_POP; ausencia de RX se valida en wrap_up.
                 return 1'b1;
             end
 
@@ -285,26 +241,17 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
         endcase
     endfunction
 
-    // -------- Cierre del test -----------------------------------------
-
-    // Declarada como `function` (no `task`): no contiene ningún
-    // bloqueo (`@`, `#`, `get()`), así que ejecuta en tiempo cero
-    // igual que antes — pero al ser función puede invocarse también
-    // desde un bloque `final` del Environment, donde un `task` no
-    // compilaría.
+    // ── Cierre del test
     function void wrap_up();
         int          tx_idx, rx_idx;
         int          idxs[$];
         int          n_recv;
         int unsigned total_contabilizado;
-        // Estado por esperado pendiente:
-        //   0 = sin TX exacto
-        //   1 = P2P con TX exacto ya consumido, sin RX exacto
-        //   2 = ya contabilizado
+        // Estado por esperado: 0=sin TX exacto, 1=TX sin RX, 2=contabilizado
         int          estado [$];
         dest_kind_e  kind;
 
-        // ---- Fase 1: todos los matches exactos, antes de diagnosticar ----
+        // ── Fase 1: matches exactos
         foreach (expected_q[i]) begin
             kind = clasificar(expected_q[i]);
             estado.push_back(0);
@@ -329,7 +276,7 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 VALID_P2P: begin
                     rx_idx = buscar_en_rx(expected_q[i].id_destino, expected_q[i].payload);
                     if (rx_idx == -1) begin
-                        estado[i] = 1;   // se diagnostica en la fase 2
+                        estado[i] = 1;
                     end else begin
                         rx_q.delete(rx_idx);
                         n_matches_p2p++;
@@ -356,20 +303,18 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
             endcase
         end
 
-        // ---- Fase 2: diagnóstico de lo que quedó sin match exacto ----
+        // ── Fase 2: diagnostico
         foreach (expected_q[i]) begin
             case (estado[i])
                 0: begin
-                    // Sin TX exacto: ¿hay un TX de la misma ruta con otro payload?
+                    // Sin TX exacto: buscar TX por ruta.
                     tx_idx = buscar_en_tx_por_ruta(expected_q[i].id_origen,
                                                     expected_q[i].id_destino);
                     if (tx_idx == -1) begin
                         n_missing_tx++;
                         $error("[CHK-FAIL] Falta TX_POP para %s", expected_q[i].convert2str());
                     end else begin
-                        // Payload corrupto en TX: se cuenta como mismatch y se
-                        // consume el esperado SIN contarlo como match del tipo
-                        // (evita doble conteo en el invariante).
+                        // Payload corrupto en TX.
                         n_mismatches_payload++;
                         $error("[CHK-FAIL] Payload corrupto en TX para %s (obtenido=0x%0h)",
                                expected_q[i].convert2str(), tx_q[tx_idx].payload);
@@ -378,12 +323,13 @@ class Checker #(parameter pckg_sz = `PCKG_SZ);
                 end
 
                 1: begin
-                    // TX correcto, sin RX exacto: ¿llegó un RX al destino con otro payload?
+                    // TX correcto sin RX exacto: buscar RX por destino.
                     rx_idx = buscar_en_rx_por_destino(expected_q[i].id_destino);
                     if (rx_idx == -1) begin
                         n_missing_rx++;
                         $error("[CHK-FAIL] Falta RX_PUSH para %s", expected_q[i].convert2str());
                     end else begin
+                        // Payload corrupto en RX.
                         n_mismatches_payload++;
                         $error("[CHK-FAIL] Payload corrupto TX->RX para %s (recibido=0x%0h)",
                                expected_q[i].convert2str(), rx_q[rx_idx].payload);

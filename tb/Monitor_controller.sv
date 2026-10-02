@@ -23,6 +23,7 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         end
     endfunction
 
+    // ── Proceso padre: Inicia el monitor controller
     task run();
       $display("T=%0t [MONITOR_CONTROLLER] Starting...", $time);
       
@@ -35,8 +36,7 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         join_none
     endtask
 
-    // Un proceso "forever" por hijo, cada uno capturando su propio
-    // índice con `automatic int idx = i` (directriz #4).
+    // ── Proceso 1: Recolecta eventos de cada monitor hijo
     task recolectar_hijos();
         foreach (mon_son_mbx[i]) begin
             automatic int idx = i;
@@ -52,18 +52,14 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         end
     endtask
 
-    // Observa el reset a través de la interface 0 (reset global
-    // compartido por los 4 dispositivos, ver SUPUESTOS A VALIDAR) y
-    // emite UN solo centinela EV_RESET por flanco de subida, sin
-    // repetirlo mientras el reset se mantenga asertado.
+    // ── Proceso 2: Reporta reset global una sola vez
     task watchdog_reset();
         // Solo detecta reset muestreado en posedge clk. Pulsos sub-ciclo no se reportan
         // (caso físicamente improbable en el testbench actual).
         trans_bus t;
         forever begin
             @(posedge v_bif[0].clk);
-            // Asume reset global compartido por las 4 interfaces (supuesto 5 de NOTAS_INTEGRACION.md).
-            // Si en el futuro cada terminal tuviera reset independiente, este watchdog requiere revisión.
+            // Reset global compartido por las 4 interfaces.
             if (v_bif[0].reset && !reset_sent) begin
                 reset_sent  = 1'b1;
                 t           = new();
