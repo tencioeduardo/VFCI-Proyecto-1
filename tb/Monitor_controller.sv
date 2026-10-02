@@ -1,24 +1,19 @@
+//============================================
+// Clase Monitor_controller (capa de comando)
+//============================================
+
 `ifndef MONITOR_CONTROLLER_SV
 `define MONITOR_CONTROLLER_SV
 
-// -----------------------------------------------------------------
-// Monitor_controller: instancia los 4 Monitor_son (uno por
-// dispositivo), reenvía todo lo que observan hacia mon2chk_mbx, y
-// agrega el centinela EV_RESET (una sola vez por evento de reset,
-// sin spam) para que el Checker sepa cuándo limpiar sus colas.
-//
-// Comparte los handles v_bif[4] con el Driver_controller: no
-// instancia interfaces propias (decisión 3.E).
-// -----------------------------------------------------------------
 class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
-    virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4];
+  virtual bus_if #(.pckg_sz(pckg_sz)).monitor_mp v_bif [4];
     trans_bus_mbx                       mon_son_mbx [4];
     trans_bus_mbx                       mon2chk_mbx;
     Monitor_son #(pckg_sz)              children [4];
     bit                                 reset_sent;
 
     function new(trans_bus_mbx mon2chk_mbx,
-                 virtual bus_if #(.pckg_sz(pckg_sz)) v_bif [4]);
+                 virtual bus_if #(.pckg_sz(pckg_sz)).monitor_mp v_bif [4]);
         this.mon2chk_mbx = mon2chk_mbx;
         this.reset_sent  = 1'b0;
         foreach (v_bif[i]) begin
@@ -28,7 +23,10 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         end
     endfunction
 
+    // ── Proceso padre: Inicia el monitor controller
     task run();
+      $display("T=%0t [MONITOR_CONTROLLER] Starting...", $time);
+      
         fork
             begin
                 foreach (children[i]) children[i].run();
@@ -38,8 +36,7 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         join_none
     endtask
 
-    // Un proceso "forever" por hijo, cada uno capturando su propio
-    // índice con `automatic int idx = i` (directriz #4).
+    // ── Proceso 1: Recolecta eventos de cada monitor hijo
     task recolectar_hijos();
         foreach (mon_son_mbx[i]) begin
             automatic int idx = i;
@@ -55,14 +52,12 @@ class Monitor_controller #(parameter pckg_sz = `PCKG_SZ);
         end
     endtask
 
-    // Observa el reset a través de la interface 0 (reset global
-    // compartido por los 4 dispositivos, ver SUPUESTOS A VALIDAR) y
-    // emite UN solo centinela EV_RESET por flanco de subida, sin
-    // repetirlo mientras el reset se mantenga asertado.
+    // ── Proceso 2: Reporta reset global una sola vez
     task watchdog_reset();
         trans_bus t;
         forever begin
             @(posedge v_bif[0].clk);
+            // Reset global compartido por las 4 interfaces.
             if (v_bif[0].reset && !reset_sent) begin
                 reset_sent  = 1'b1;
                 t           = new();
