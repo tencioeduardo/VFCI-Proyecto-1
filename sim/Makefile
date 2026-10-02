@@ -46,7 +46,7 @@ SOAK_DELAY           ?= 2
 # --- Parámetros del reporte CSV y del histograma
 CSV_OUT        ?= packets.csv
 CSV_PNG        ?= delay_histogram.png
-BIN_WIDTH      ?= 2
+BIN_WIDTH      ?= 1
 
 
 # --- Opción de compilación
