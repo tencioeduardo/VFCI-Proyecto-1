@@ -54,18 +54,39 @@ class Driver_son #(parameter pckg_sz = `PCKG_SZ);
 
     // ── Proceso 2: Manejar protocolo de comunicacion con el DUT (pndng / pop / D_pop)
     task manejar_protocolo();
-        trans_bus trans;
+        int unsigned ciclos_restantes = 0;
+        bit          espera_iniciada  = 0;
 
         forever begin
-            v_bif.pndng = (cola_tx.size() > 0);
-            v_bif.D_pop = (cola_tx.size() > 0) ? empaquetar_datos(cola_tx[0]) : '0;
+            if (cola_tx.size() > 0) begin
+                if (!espera_iniciada) begin
+                    ciclos_restantes = cola_tx[0].delay;
+                    espera_iniciada  = 1;
+                end
 
-            @(posedge v_bif.clk);
+                if (ciclos_restantes > 0) begin
+                    v_bif.pndng = 0;
+                    v_bif.D_pop = '0;
+                end else begin
+                    v_bif.pndng = 1;
+                    v_bif.D_pop = empaquetar_datos(cola_tx[0]);
+                end
+            end else begin
+                v_bif.pndng = 0;
+                v_bif.D_pop = '0;
+            end
 
-            if(v_bif.pop && cola_tx.size() > 0) begin
+            @(posedge v_bif.clk);   
+
+            // ── Reduce los ciclos
+            if (cola_tx.size() > 0 && ciclos_restantes > 0)
+                ciclos_restantes--;
+
+            // ── Manda el paquete si ya no hay ciclos restantes y si se solicita
+            if (v_bif.pop && cola_tx.size() > 0 && ciclos_restantes == 0) begin
                 $display("T=%0t [DRIVER_SON %0d] Packet sent to DUT.", $time, driver_id);
-
                 void'(cola_tx.pop_front());
+                espera_iniciada = 0;
             end
         end
     endtask
