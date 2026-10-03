@@ -12,20 +12,15 @@
 
 VCS      = vcs
 SIMV     = ./simv
+DRVRS   ?= 4
 
-
-# --- Parámetro estructural (requiere recompilación si cambia)
-PCKG_SZ        ?= 16
-
-
-# --- Parámetros de control general del test
+# --- Parámetros de configuración general del test
 SEED           ?= automatic
 TIMEOUT        ?= 1000000
 DRAIN_CYCLES   ?= 500
-
+PCKG_SZ        ?= 16
 
 # --- Parámetros de campos aleatorizables
-DRVRS                  ?= 4
 WT_DESTINO_VALIDO      ?= 70
 WT_DESTINO_INVALIDO    ?= 20
 WT_BROADCAST           ?= 10
@@ -34,14 +29,15 @@ MAX_DELAY              ?= 5
 PAYLOAD_MIN            ?= 0
 PAYLOAD_MAX            ?= 255
 
+# --- Parámetros para escenario aleatorio
+N_SOAK               ?= 5000
+SOAK_DELAY           ?= 2
+
 # --- Parámetros de escenarios dirigidos del test
 BROADCAST_ORIGEN     ?= 0
 ACAPARADOR_ORIGEN    ?= 1
 AUTOENVIO_ORIGEN     ?= 2
 ACAPARADOR_CANTIDAD  ?= 7
-N_SOAK               ?= 5000
-SOAK_DELAY           ?= 2
-
 
 # --- Parámetros del reporte CSV y del histograma
 CSV_OUT        ?= packets.csv
